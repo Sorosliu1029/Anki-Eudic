@@ -1,0 +1,2670 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getcategory -->
+<html class=" idc0_343 uvozfij"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>开发指南 | 欧路词典</title>
+    
+	<script src="./eudic-develop-guide_files/jquery.min.js"></script>
+	<script src="./eudic-develop-guide_files/marked.min.js"></script>
+
+
+    <link href="./eudic-develop-guide_files/common.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="./eudic-develop-guide_files/nifty-demo-icons.min.css" rel="stylesheet">
+    <link href="./eudic-develop-guide_files/nifty-demo.min.css" rel="stylesheet">
+    <link href="./eudic-develop-guide_files/ionicons.min.css" rel="stylesheet">
+
+    <link href="./eudic-develop-guide_files/menu.css" rel="stylesheet">
+    <link href="./eudic-develop-guide_files/iconfont.css" rel="stylesheet">
+    <link href="./eudic-develop-guide_files/layer.css" rel="stylesheet">
+<link rel="stylesheet" href="./eudic-develop-guide_files/layer(1).css" id="layuicss-layer"><style id="__web-inspector-hide-shortcut-style__">
+.__web-inspector-hide-shortcut__, .__web-inspector-hide-shortcut__ *
+{
+    visibility: hidden !important;
+}
+</style></head>
+<body class="en">
+
+    <div id="container" class="effect aside-float aside-bright mainnav-lg " data-vip="True">
+        <header id="navbar">
+            <div id="navbar-container" class="boxed">
+                <input type="hidden" name="name" value="" class="language_category flag-en">
+                <div class="navbar-header">
+                    <a href="https://my.eudic.net/OpenAPI/index.html" class="navbar-brand">
+                        <img src="./eudic-develop-guide_files/en_logo.png" alt="Nifty Logo" style="display:none;width:28px;height:28px;margin-top:6px!important;margin-right:5px!important;" class="brand-icon">
+                        <div class="brand-title" style="display:none;">
+                            <span class="brand-text">欧路词典</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="navbar-content clearfix" id="eudicNavCont" style="display: flex;">
+                    <ul class="nav navbar-top-links pull-left">
+                        <li class="tgl-menu-btn">
+                            <a class="mainnav-toggle" href="https://my.eudic.net/OpenAPI/doc_api_study#">
+                                <i class="iconfont icon-list1"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    
+	<i class="iconfont icon-home"></i>
+	<ul class="pull-left">
+		<li style="float:left;"><a href="https://my.eudic.net/home/index">首页</a></li>
+		<li style="float:left;"><i class="iconfont icon-right_arrow header_route_i"></i><a href="https://my.eudic.net/OpenAPI/doc_api_study#">欧路词典</a></li>
+		<li style="float:left;" class="active"><i class="iconfont icon-right_arrow header_route_i"></i><a href="https://my.eudic.net/OpenAPI/doc_api_study#">开发指南</a></li>
+	</ul>
+
+                    <!--用户信息-->
+                    <div class="userinfoNav">
+                        <img class="userAvatar" src="./eudic-develop-guide_files/bb92cbeb-e0b9-11e4-8111-000c29ffef9b">
+                        
+<div id="mainnav-profile" class="mainnav-profile" style="display: none;">
+    <div class="profile-wrap">
+        <div class="pad-btm">
+            <img class="img-circle img-sm img-border" src="./eudic-develop-guide_files/bb92cbeb-e0b9-11e4-8111-000c29ffef9b(1)">
+        </div>
+        <div class="userText">
+            <p class="mnp-name">Walle1029(通过微信账号登录)</p>
+            <span class="mnp-desc">1538754699@qq.com</span>
+        </div>
+    </div>
+    <div id="profile-nav" class="list-group bg-trans">
+        <a href="https://my.eudic.net/" class="list-group-item">
+            <i class="iconfont icon-wode-copy"></i> 我的个人主页
+        </a>
+        <a href="https://dict.eudic.net/Account/LogOff?returnUrl=http://my.eudic.net/OpenAPI/doc_api_study" class="list-group-item">
+            <i class="iconfont icon-tuichudenglu"></i> 退出登录
+        </a>
+    </div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="boxed">
+            <div id="content-container" data-lang="en">
+                
+
+<div class="contain_main docPage">
+	<div class="header_path">
+	</div>
+	<div id="page-content">
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-12 eq-box-lg">
+				<div class="panel">
+					<div class="panel-heading group_header">
+						<h3 class="panel-title">开发指南</h3>
+					</div>
+					<div class="panel-body">
+						<div class="md_render"><h3 id="目录">目录</h3>
+<ol>
+<li><p><a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi">生词本API</a></p>
+<ul>
+<li><p>1.1. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getcategory">获取所有生词本</a></p>
+</li>
+<li><p>1.2. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-addcategory">添加一个新的生词本</a></p>
+</li>
+<li><p>1.3. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-renamecategory">重命名一个生词本</a></p>
+</li>
+<li><p>1.4. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-deletecategory">删除一个生词本</a></p>
+</li>
+<li><p>1.5. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getwords">获取生词本中的单词</a></p>
+</li>
+<li><p>1.6. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-addwords">添加单词到生词本</a></p>
+</li>
+<li><p>1.7. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-deletewords">删除生词本中的单词</a></p>
+</li>
+<li><p>1.8. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-addword">新增生词本中的一个单词</a></p>
+</li>
+<li><p>1.9. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getword">查询生词本中的一个单词</a></p>
+</li>
+<li><p>1.10. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getmasteredwords">查询已掌握单词</a></p>
+</li>
+<li><p>1.11. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getuservocabentries">查询用户词汇列表</a></p>
+</li>
+<li><p>1.12. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getuservocabbywords">批量查询用户词汇单词详情</a></p>
+</li>
+<li><p>1.13. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-getsentences">获取例句列表</a></p>
+</li>
+<li><p>1.14. <a href="https://my.eudic.net/OpenAPI/doc_api_study#-studylistapi-vocabhints">解析文章生成词汇提示</a></p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="1--生词本api">1. <a name="-studylistapi"></a> 生词本API</h3>
+<h4 id="11--获取所有生词本">1.1. <a name="-studylistapi-getcategory"></a> 获取所有生词本</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>GET</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/category</code></li>
+<li>本接口用于获取生词本信息</li>
+<li>生词本的ID是唯一标识，用于调用其他接口</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>string</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>生词本信息</td>
+<td>请求成功时存在</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p> *data 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>text</td>
+<td>生词本名称</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>GET</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/category?language=en</code></p>
+</li>
+<li><p>Response Code：<code>200</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+  "data": [
+      {
+      "id": "0",
+      "language": "en",
+      "name": "我的生词本"
+      },
+      {
+      "id": "132303016416635230",
+      "language": "en",
+      "name": "nanana3"
+      },
+      {
+      "id": "132303016647118400",
+      "language": "en",
+      "name": "新的名称"
+      }
+  ],
+  "message": ""
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import requests
+
+ url = "https://api.frdic.com/api/open/v1/studylist/category?language=en"
+
+ headers = {
+ 'User-Agent': 'Mozilla/5.0',
+ 'Authorization': 'NIS xxxx'
+ }
+
+ response = requests.request("GET", url, headers=headers)
+ print(response.text)
+</code></pre>
+</li>
+</ol>
+<h4 id="12--添加一个新的生词本">1.2. <a name="-studylistapi-addcategory"></a> 添加一个新的生词本</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>POST</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/category</code></li>
+<li>本接口用于添加一个新的生词本</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>生词本信息</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> *value 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>name</td>
+<td>text</td>
+<td>课本名称</td>
+<td>True</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>object</td>
+<td>新的生词本信息</td>
+<td>请求成功时存在</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p> *data 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>text</td>
+<td>生词本名称</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>POST</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/category</code></p>
+</li>
+<li><p>Request Body：</p>
+<pre><code class="language-json">  {
+  "language": "en",
+  "name": "新增生词本1"
+  }</code></pre>
+</li>
+<li><p>Response Code：<code>201</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+  "data": {
+      "id": "132314173819830130",
+      "language": "en",
+      "name": "新增生词本1"
+  },
+  "message": ""
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import requests
+ import json
+
+ url = "https://api.frdic.com/api/open/v1/studylist/category"
+
+ payload = json.dumps({
+ "language": "en",
+ "name": "test"
+ })
+ headers = {
+ 'User-Agent': 'Mozilla/5.0',
+ 'Authorization': 'NIS xxxx',
+ 'Content-Type': 'application/json'
+ }
+
+ response = requests.request("POST", url, headers=headers, data=payload)
+
+ print(response.text)
+</code></pre>
+</li>
+</ol>
+<h4 id="13--重命名一个生词本">1.3. <a name="-studylistapi-renamecategory"></a> 重命名一个生词本</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>PATCH</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/category</code></li>
+<li>本接口用于修改生词本名称</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>PATCH</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>生词本信息</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> *value 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>name</td>
+<td>text</td>
+<td>课本名称</td>
+<td>True</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>PATCH</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/category</code></p>
+</li>
+<li><p>Request Body：</p>
+<pre><code class="language-json">  {
+  "id": "132314173819830125",
+  "language": "en",
+  "name": "新的名称1"
+  }</code></pre>
+</li>
+<li><p>Response Code：<code>201</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+  "message": "分类重命名成功"
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import requests
+ import json
+
+ url = "https://api.frdic.com/api/open/v1/studylist/category"
+
+ payload = json.dumps({
+ "id": "132571528645227886",
+ "language": "en",
+ "name": "test1"
+ })
+ headers = {
+ 'User-Agent': 'Mozilla/5.0',
+ 'Authorization': 'NIS xxxx',
+ 'Content-Type': 'application/json'
+ }
+
+ response = requests.request("PATCH", url, headers=headers, data=payload)
+
+ print(response.text)
+</code></pre>
+</li>
+</ol>
+<h4 id="14--删除一个生词本">1.4. <a name="-studylistapi-deletecategory"></a> 删除一个生词本</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>DELETE</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/category</code></li>
+<li>本接口用于删除生词本</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>DELETE</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>生词本信息</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> *value 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>name</td>
+<td>text</td>
+<td>课本名称</td>
+<td>True</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td>失败时存在</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>DELETE</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/category</code></p>
+</li>
+<li><p>Request Body：</p>
+<pre><code class="language-json">  {
+  "id": "132314173819830125",
+  "language": "en",
+  "name": "新的名称1"
+  }</code></pre>
+</li>
+<li><p>Response Code：<code>204</code></p>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import requests
+ import json
+
+ url = "https://api.frdic.com/api/open/v1/studylist/category"
+
+ payload = json.dumps({
+ "id": "{{test_openapi_category}}",
+ "language": "en",
+ "name": "test1"
+ })
+ headers = {
+ 'User-Agent': 'Mozilla/5.0',
+ 'Authorization': 'NIS xxxx',
+ 'Content-Type': 'application/json'
+ }
+
+ response = requests.request("DELETE", url, headers=headers, data=payload)
+
+ print(response.text)
+</code></pre>
+</li>
+</ol>
+<h4 id="15--获取生词本中的单词">1.5. <a name="-studylistapi-getwords"></a> 获取生词本中的单词</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>GET</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/words</code></li>
+<li>本接口用于获取生词本中的单词</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>category_id</td>
+<td>text</td>
+<td>query</td>
+<td>生词本ID</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>query</td>
+<td>分页页数</td>
+<td>False</td>
+<td>从 0 开始，最小 0，最大 50</td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>integer</td>
+<td>query</td>
+<td>分页单词数量</td>
+<td>False</td>
+<td>默认 100，最大 100</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>单词信息</td>
+<td>请求成功时存在</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p> *data 单词信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>word</td>
+<td>string</td>
+<td>单词</td>
+<td></td>
+</tr>
+<tr>
+<td>phon</td>
+<td>string</td>
+<td>音标</td>
+<td></td>
+</tr>
+<tr>
+<td>exp</td>
+<td>string</td>
+<td>释义</td>
+<td></td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>string</td>
+<td>时间</td>
+<td></td>
+</tr>
+<tr>
+<td>star</td>
+<td>int</td>
+<td>单词等级</td>
+<td></td>
+</tr>
+<tr>
+<td>context_line</td>
+<td>string</td>
+<td>单词所在语境</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>GET</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/words?language=en&amp;category_id=0&amp;page=0&amp;page_size=2</code></p>
+</li>
+<li><p>Response Code：<code>200</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+  "data": [
+      {
+      "word": "action",
+      "phon": "/'ækʃn/",
+      "exp": "n. 行动；活动；功能；情节；战斗",
+      "add_time": "2020-10-29T18:23:29Z",
+      "star": 1,
+      "context_line": "He took immediate action to solve the problem when he noticed it.",
+      },
+      {
+      "word": "and",
+      "phon": "/ənd/",
+      "exp": "conj. 和，与；而且；然后；就；但是",
+      "add_time": "2020-10-29T18:23:29Z",
+      "star": 1,
+      }
+  ],
+  "message": ""
+  }</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="16--添加单词到生词本">1.6. <a name="-studylistapi-addwords"></a> 添加单词到生词本</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>POST</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/words</code></li>
+<li>本接口用于往生词本里添加单词</li>
+<li>重复单词不会添加</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>生词本信息</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> *value 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td>True</td>
+<td>已废弃，建议使用category_id</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>words</td>
+<td>Array[text]</td>
+<td>单词数组</td>
+<td>True</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>POST</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/words</code></p>
+</li>
+<li><p>Request Body：</p>
+<pre><code class="language-json">  {
+  "language": "en",
+  "category_id":"0",
+  "words": [
+      "english",
+      "french"
+  ]
+  }</code></pre>
+</li>
+<li><p>Response Code：<code>201</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+  "message": "单词导入成功,导入数量 : 2"
+  }</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="17--删除生词本中的单词">1.7. <a name="-studylistapi-deletewords"></a> 删除生词本中的单词</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>DELETE</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/words</code></li>
+<li>本接口用于删除生词本中的单词</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>DELETE</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>生词本信息</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> *value 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td>True</td>
+<td>已废弃，建议使用category_id</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>text</td>
+<td>生词本ID</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>words</td>
+<td>Array[text]</td>
+<td>单词数组</td>
+<td>True</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td>失败时存在</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>DELETE</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/words</code></p>
+</li>
+<li><p>Request Body：</p>
+<pre><code class="language-json">  {
+  "language": "en",
+  "category_id": 0,
+  "words": [
+      "english",
+      "french"
+  ]
+  }</code></pre>
+</li>
+<li><p>Response Code：<code>204</code></p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="18--新增生词本中的一个单词">1.8. <a name="-studylistapi-addword"></a> 新增生词本中的一个单词</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>POST</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/word</code></li>
+<li>本接口用于往生词本里添加单词</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>生词信息</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> *value 生词本信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>word</td>
+<td>text</td>
+<td>单词</td>
+<td>True</td>
+<td></td>
+</tr>
+<tr>
+<td>star</td>
+<td>text</td>
+<td>等级</td>
+<td>False</td>
+<td></td>
+</tr>
+<tr>
+<td>context_line</td>
+<td>text</td>
+<td>语境</td>
+<td>False</td>
+<td></td>
+</tr>
+<tr>
+<td>category_ids</td>
+<td>text</td>
+<td>分组列表</td>
+<td>False</td>
+<td>不设置则加到默认分组</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>POST</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/word</code></p>
+</li>
+<li><p>Request Body：</p>
+<pre><code class="language-json">  {
+      "language": "en",
+      "word": "hello",
+      "star": 2,
+      "context_line": "hello, how are you?",
+      "category_ids": [0]
+  }</code></pre>
+</li>
+<li><p>Response Code：<code>201</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+  "message": "单词添加成功"
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import http.client
+ import json
+
+ conn = http.client.HTTPSConnection("api.frdic.com")
+ payload = json.dumps({
+ "language": "en",
+ "word": "hello",
+ "star": 2,
+ "context_line": "hello, how are you?",
+ "category_ids": [0]
+ })
+ headers = {
+     'User-Agent': 'Mozilla/5.0',
+     'Authorization': 'NIS xxxx',
+     'Content-Type': 'application/json'
+ }
+
+ conn.request("POST", "/api/open/v1/studylist/word/", payload, headers)
+ res = conn.getresponse()
+ data = res.read()
+ print(data.decode("utf-8"))</code></pre>
+</li>
+</ol>
+<h4 id="19--查询生词本中的一个单词">1.9. <a name="-studylistapi-getword"></a> 查询生词本中的一个单词</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>GET</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/word</code></li>
+<li>本接口用于获取生词本中的一个单词</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>text</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>word</td>
+<td>text</td>
+<td>单词</td>
+<td>True</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>单词信息</td>
+<td>请求成功时存在</td>
+</tr>
+</tbody></table>
+<p> *data 单词信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>word</td>
+<td>string</td>
+<td>单词</td>
+<td></td>
+</tr>
+<tr>
+<td>exp</td>
+<td>string</td>
+<td>释义</td>
+<td></td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>string</td>
+<td>时间</td>
+<td></td>
+</tr>
+<tr>
+<td>star</td>
+<td>int</td>
+<td>单词等级</td>
+<td></td>
+</tr>
+<tr>
+<td>context_line</td>
+<td>string</td>
+<td>单词所在语境</td>
+<td></td>
+</tr>
+<tr>
+<td>category_ids</td>
+<td>string</td>
+<td>单词所在分组</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>GET</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/word?language=en&amp;word=hello</code></p>
+</li>
+<li><p>Response Code：<code>200</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+          "word": "hello",
+          "exp": "",
+          "add_time": "2025-06-02T21:09:39Z",
+          "star": 2,
+          "context_line": "&lt;b&gt;hello&lt;/b&gt;, how are you?",
+          "category_ids": [0]
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import http.client
+
+ conn = http.client.HTTPSConnection("api.frdic.com")
+ payload = ''
+ headers = {
+     'User-Agent': 'Mozilla/5.0',
+     'Authorization': 'NIS xxxx',
+     'Content-Type': 'application/json'
+ }
+ conn.request("GET", "/api/open/v1/studylist/word?language=en&amp;word=hello", payload, headers)
+ res = conn.getresponse()
+ data = res.read()
+ print(data.decode("utf-8"))</code></pre>
+</li>
+</ol>
+<h4 id="110--查询已掌握单词">1.10. <a name="-studylistapi-getmasteredwords"></a> 查询已掌握单词</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>GET</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/mastered_words</code></li>
+<li>本接口用于获取已掌握的单词列表</li>
+<li>已掌握单词以 <code>UserMemoryItem</code> / <code>eudic_cus_memory</code> 中存在该单词为准</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>text</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>text</td>
+<td>query</td>
+<td>生词本ID</td>
+<td>False</td>
+<td>仅返回该分组与已掌握列表的交集</td>
+</tr>
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>query</td>
+<td>分页页数</td>
+<td>False</td>
+<td>从 0 开始，最小 0，最大 50</td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>integer</td>
+<td>query</td>
+<td>分页单词数量</td>
+<td>False</td>
+<td>默认 100，最大 100</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>单词信息</td>
+<td>请求成功时存在</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p> *data 单词信息：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>word</td>
+<td>string</td>
+<td>单词</td>
+<td></td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>string</td>
+<td>时间</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>示例：</p>
+<ul>
+<li><p>Requset Method: <code>GET</code></p>
+</li>
+<li><p>Request URL：<code>https://api.frdic.com/api/open/v1/studylist/mastered_words?language=en&amp;page=0&amp;page_size=2</code></p>
+</li>
+<li><p>Response Code：<code>200</code></p>
+</li>
+<li><p>Response Body：</p>
+<pre><code class="language-json">  {
+      "data": [
+          {
+              "word": "pool",
+              "add_time": "2020-01-23T21:12:56Z"
+          },
+          {
+              "word": "amplify",
+              "add_time": "2020-06-15T21:18:11Z"
+          }
+      ],
+      "message": ""
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>生成接口请求代码(python-request)：</p>
+<pre><code class="language-json"> import http.client
+
+ conn = http.client.HTTPSConnection("api.frdic.com")
+ payload = ''
+ headers = {
+     'User-Agent': 'Mozilla/5.0',
+     'Authorization': 'NIS xxxx',
+     'Content-Type': 'application/json'
+ }
+ conn.request("GET", "/api/open/v1/studylist/mastered_words?language=en&amp;page=0&amp;page_size=2", payload, headers)
+ res = conn.getresponse()
+ data = res.read()
+ print(data.decode("utf-8"))</code></pre>
+</li>
+</ol>
+<h4 id="111--查询用户语料列表">1.11. <a name="-studylistapi-getuservocabentries"></a> 查询用户语料列表</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>GET</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/vocab_entries</code></li>
+<li>返回当前用户的语料列表。</li>
+<li>支持按最近 N 天和是否已收藏到生词本（<code>study_list.rating &gt; 0</code>）筛选。</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>string</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>recent_days</td>
+<td>integer</td>
+<td>query</td>
+<td>最近 N 天</td>
+<td>False</td>
+<td><code>&lt;= 0</code> 表示不筛选</td>
+</tr>
+<tr>
+<td>is_favorited</td>
+<td>bool</td>
+<td>query</td>
+<td>是否已收藏到生词本</td>
+<td>False</td>
+<td><code>true</code> 只看已收藏，<code>false</code> 只看未收藏</td>
+</tr>
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>query</td>
+<td>页码</td>
+<td>False</td>
+<td>从 0 开始，最小 0，最大 50</td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>integer</td>
+<td>query</td>
+<td>每页数量</td>
+<td>False</td>
+<td>默认 <code>100</code>，最大 <code>100</code></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>语料列表</td>
+<td>成功时返回</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p> <em>data 字段说明：</em></p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>word</td>
+<td>string</td>
+<td>单词</td>
+<td></td>
+</tr>
+<tr>
+<td>exp</td>
+<td>string</td>
+<td>释义</td>
+<td></td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>string</td>
+<td>添加时间</td>
+<td></td>
+</tr>
+<tr>
+<td>rating</td>
+<td>int</td>
+<td>生词本评级</td>
+<td><code>&gt; 0</code> 表示已收藏</td>
+</tr>
+<tr>
+<td>contexts</td>
+<td>Array</td>
+<td>语境列表</td>
+<td>可能为空</td>
+</tr>
+</tbody></table>
+<p> <em>contexts 字段说明：</em></p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>src</td>
+<td>string</td>
+<td>原文语境</td>
+<td></td>
+</tr>
+<tr>
+<td>trans</td>
+<td>string</td>
+<td>译文语境</td>
+<td></td>
+</tr>
+<tr>
+<td>word_in_context</td>
+<td>string</td>
+<td>语境中的词形</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>调用示例：</p>
+<ul>
+<li><p>请求方式：<code>GET</code></p>
+</li>
+<li><p>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/vocab_entries?language=en&amp;recent_days=30&amp;is_favorited=true&amp;page=0&amp;page_size=2</code></p>
+</li>
+<li><p>响应状态码：<code>200</code></p>
+</li>
+<li><p>响应内容：</p>
+<pre><code class="language-json">  {
+    "data": [
+      {
+        "word": "action",
+        "exp": "n. action; activity; function; plot; combat",
+        "add_time": "2025-03-01T08:30:00Z",
+        "rating": 2,
+        "contexts": [
+          {
+            "src": "He took immediate action to solve the problem.",
+            "trans": "He solved it right away.",
+            "word_in_context": "action"
+          }
+        ]
+      },
+      {
+        "word": "amplify",
+        "exp": "vt. amplify; enhance",
+        "add_time": "2025-02-18T09:15:00Z",
+        "rating": 1,
+        "contexts": []
+      }
+    ],
+    "message": ""
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Python示例：</p>
+<pre><code class="language-python"> import http.client
+
+ conn = http.client.HTTPSConnection("api.frdic.com")
+ payload = ""
+ headers = {
+     "User-Agent": "Mozilla/5.0",
+     "Authorization": "NIS xxxx",
+     "Content-Type": "application/json"
+ }
+ conn.request("GET", "/api/open/v1/studylist/vocab_entries?language=en&amp;recent_days=30&amp;is_favorited=true&amp;page=0&amp;page_size=2", payload, headers)
+ res = conn.getresponse()
+ data = res.read()
+ print(data.decode("utf-8"))</code></pre>
+</li>
+</ol>
+<h4 id="112--批量查询用户语料单词详情">1.12. <a name="-studylistapi-getuservocabbywords"></a> 批量查询用户语料单词详情</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>POST</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/vocab_words</code></li>
+<li>批量返回多个单词对应的用户语料详情。</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>请求体</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p> <em>value 字段说明：</em></p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>text</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>words</td>
+<td>Array[text]</td>
+<td>要查询的单词列表</td>
+<td>True</td>
+<td>空白单词会被忽略，重复项会去重</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>单词详情列表</td>
+<td>成功时返回</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p> <em>data 字段说明：</em></p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>word</td>
+<td>string</td>
+<td>单词</td>
+<td></td>
+</tr>
+<tr>
+<td>exp</td>
+<td>string</td>
+<td>释义</td>
+<td></td>
+</tr>
+<tr>
+<td>contexts</td>
+<td>Array</td>
+<td>语境列表</td>
+<td>可能为空</td>
+</tr>
+</tbody></table>
+<p> <em>contexts 字段说明：</em></p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>src</td>
+<td>string</td>
+<td>原文语境</td>
+<td></td>
+</tr>
+<tr>
+<td>trans</td>
+<td>string</td>
+<td>译文语境</td>
+<td></td>
+</tr>
+<tr>
+<td>word_in_context</td>
+<td>string</td>
+<td>语境中的词形</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>调用示例：</p>
+<ul>
+<li><p>请求方式：<code>POST</code></p>
+</li>
+<li><p>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/vocab_words</code></p>
+</li>
+<li><p>请求内容：</p>
+<pre><code class="language-json">  {
+    "language": "en",
+    "words": [
+      "action",
+      "amplify"
+    ]
+  }</code></pre>
+</li>
+<li><p>响应状态码：<code>200</code></p>
+</li>
+<li><p>响应内容：</p>
+<pre><code class="language-json">  {
+    "data": [
+      {
+        "word": "action",
+        "exp": "n. action; activity; function; plot; combat",
+        "contexts": [
+          {
+            "src": "He took immediate action to solve the problem.",
+            "trans": "He solved it right away.",
+            "word_in_context": "action"
+          }
+        ]
+      },
+      {
+        "word": "amplify",
+        "exp": "vt. amplify; enhance",
+        "contexts": []
+      }
+    ],
+    "message": ""
+  }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Python示例：</p>
+<pre><code class="language-python"> import requests
+ import json
+
+ url = "https://api.frdic.com/api/open/v1/studylist/vocab_words"
+
+ payload = json.dumps({
+     "language": "en",
+     "words": ["action", "amplify"]
+ })
+ headers = {
+     "User-Agent": "Mozilla/5.0",
+     "Authorization": "NIS xxxx",
+     "Content-Type": "application/json"
+ }
+
+ response = requests.request("POST", url, headers=headers, data=payload)
+ print(response.text)</code></pre>
+<h4 id="113--获取例句列表">1.13. <a name="-studylistapi-getsentences"></a> 获取例句列表</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>GET</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/sentences</code></li>
+<li>返回当前用户收集的例句列表（支持分页）。</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>GET</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>string</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>page</td>
+<td>integer</td>
+<td>query</td>
+<td>页码</td>
+<td>False</td>
+<td>从 0 开始，最大 50；小于 0 按 0 处理</td>
+</tr>
+<tr>
+<td>page_size</td>
+<td>integer</td>
+<td>query</td>
+<td>每页数量</td>
+<td>False</td>
+<td>默认 <code>100</code>，最大 <code>100</code></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>Array</td>
+<td>例句列表</td>
+<td>成功时返回</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p><em>data 字段说明：</em></p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sentence</td>
+<td>string</td>
+<td>例句原文</td>
+<td></td>
+</tr>
+<tr>
+<td>translation</td>
+<td>string</td>
+<td>例句翻译</td>
+<td></td>
+</tr>
+<tr>
+<td>note</td>
+<td>string</td>
+<td>笔记</td>
+<td></td>
+</tr>
+<tr>
+<td>add_time</td>
+<td>string</td>
+<td>添加时间</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>调用示例：</p>
+<ul>
+<li><p>请求方式：<code>GET</code></p>
+</li>
+<li><p>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/sentences?language=en&amp;page=0&amp;page_size=2</code></p>
+</li>
+<li><p>响应状态码：<code>200</code></p>
+</li>
+<li><p>响应内容：</p>
+<pre><code class="language-json"> {
+   "data": [
+     {
+       "sentence": "He took immediate action to solve the problem.",
+       "translation": "他立即采取行动解决了这个问题。",
+       "note": "",
+       "add_time": "2025-03-01T08:30:00Z"
+     },
+     {
+       "sentence": "The music was amplified by the speakers.",
+       "translation": "音乐被扬声器放大了。",
+       "note": "物理语境",
+       "add_time": "2025-02-18T09:15:00Z"
+     }
+   ],
+   "message": ""
+ }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Python示例：</p>
+</li>
+</ol>
+<pre><code class="language-python">  import http.client
+
+  conn = http.client.HTTPSConnection("api.frdic.com")
+  payload = ""
+  headers = {
+      "User-Agent": "Mozilla/5.0",
+      "Authorization": "NIS xxxx",
+      "Content-Type": "application/json"
+  }
+  conn.request("GET", "/api/open/v1/studylist/sentences?language=en&amp;page=0&amp;page_size=2", payload, headers)
+  res = conn.getresponse()
+  data = res.read()
+  print(data.decode("utf-8"))</code></pre>
+<h4 id="114--解析文章生成语料提示">1.14. <a name="-studylistapi-vocabhints"></a> 解析文章生成语料提示</h4>
+<ol>
+<li><p>接口说明：</p>
+<ul>
+<li>请求方式：<code>POST</code></li>
+<li>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/vocab_hints?language=en</code></li>
+<li>解析传入的文章文本，返回可同步到用户语料库的重点单词、词组和来源上下文，不直接写库。</li>
+<li>同一用户 30 分钟最多请求 5 次，超过后返回 <code>429</code>。</li>
+</ul>
+</li>
+<li><p>协议须知：</p>
+<table>
+<thead>
+<tr>
+<th>规则</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>传输方式</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>请求方式</td>
+<td>POST</td>
+</tr>
+<tr>
+<td>字符编码</td>
+<td>UTF-8</td>
+</tr>
+<tr>
+<td>响应格式</td>
+<td>JSON</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>接口调用参数：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>数据类型</th>
+<th>参数类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>language</td>
+<td>string</td>
+<td>query</td>
+<td>语言</td>
+<td>True</td>
+<td>en/fr/de/es</td>
+</tr>
+<tr>
+<td>value</td>
+<td>object</td>
+<td>body</td>
+<td>文章解析请求</td>
+<td>True</td>
+<td>Content-Type: application/json</td>
+</tr>
+</tbody></table>
+<p>*value 字段说明：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>必填</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>text</td>
+<td>string</td>
+<td>待解析文章文本</td>
+<td>True</td>
+<td>支持 URL 编码文本</td>
+</tr>
+<tr>
+<td>word_tags</td>
+<td>Array[text]</td>
+<td>单词标签</td>
+<td>False</td>
+<td>可选值：gk、cet4、cet6、yjs、cet8、ielts、toefl；空则不生成单词</td>
+</tr>
+<tr>
+<td>phrase_tags</td>
+<td>Array[text]</td>
+<td>词组标签</td>
+<td>False</td>
+<td>可选值：phrasal、idiom、collocation；空则不生成词组</td>
+</tr>
+<tr>
+<td>customize</td>
+<td>bool</td>
+<td>是否匹配用户生词本</td>
+<td>False</td>
+<td>true 时返回文章中命中的用户生词</td>
+</tr>
+<tr>
+<td>include_mastered</td>
+<td>bool</td>
+<td>是否包含已掌握单词</td>
+<td>False</td>
+<td>false 时过滤已掌握单词</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>输出结果：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>object</td>
+<td>语料同步数据</td>
+<td>成功时返回</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+<td>提示信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>*data 字段说明：</p>
+<table>
+<thead>
+<tr>
+<th>字段名</th>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vocab_items</td>
+<td>Array</td>
+<td>语料单词/词组列表</td>
+<td></td>
+</tr>
+<tr>
+<td>vocab_sources</td>
+<td>Array</td>
+<td>语料来源上下文列表</td>
+<td></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>调用示例：</p>
+<ul>
+<li><p>请求方式：<code>POST</code></p>
+</li>
+<li><p>请求地址：<code>https://api.frdic.com/api/open/v1/studylist/vocab_hints?language=en</code></p>
+</li>
+<li><p>请求内容：</p>
+<pre><code class="language-json"> {
+   "text": "Negotiation is a subtle art that requires patience and empathy. A skilled negotiator must take into account the other party's underlying concerns before reaching a consensus. In many cases, the willingness to compromise paves the way for a mutually beneficial outcome. He decided to break the ice with a light-hearted remark, which helped both sides let their guard down.",
+   "word_tags": [
+     "cet4",
+     "cet6",
+     "ielts",
+     "toefl"
+   ],
+   "phrase_tags": [
+     "phrasal",
+     "idiom",
+     "collocation"
+   ],
+   "customize": true,
+   "include_mastered": true
+ }</code></pre>
+</li>
+<li><p>响应状态码：<code>200</code></p>
+</li>
+<li><p>响应内容：</p>
+<pre><code class="language-json"> {
+   "data": {
+     "vocab_items": [
+       {
+         "word": "a must",
+         "type": 1,
+         "tags": "idiom",
+         "exp": "必要条件；必不可少的事物"
+       }
+     ],
+     "vocab_sources": [
+       {
+         "sync_id": "a must2jmj7l5rSw0yVb/vlWAYkK/YBwk=",
+         "word": "a must",
+         "word_in_context": "A skilled negotiator must",
+         "source_context": "{\"context\":[{\"src\":\"&lt;b&gt;A skilled negotiator must&lt;/b&gt; take into account the other party's underlying concerns before reaching a consensus.\"}]}"
+       }
+     ]
+   },
+   "message": ""
+ }</code></pre>
+</li>
+</ul>
+</li>
+<li><p>Python示例：</p>
+</li>
+</ol>
+<pre><code class="language-python">  import requests
+  import json
+
+  url = "https://api.frdic.com/api/open/v1/studylist/vocab_hints?language=en"
+  payload = json.dumps({
+      "text": "Negotiation is a subtle art that requires patience and empathy. A skilled negotiator must take into account the other party's underlying concerns before reaching a consensus. In many cases, the willingness to compromise paves the way for a mutually beneficial outcome. He decided to break the ice with a light-hearted remark, which helped both sides let their guard down.",
+      "word_tags": ["cet4", "cet6", "ielts", "toefl"],
+      "phrase_tags": ["phrasal", "idiom", "collocation"],
+      "customize": True,
+      "include_mastered": True
+  })
+  headers = {
+      "User-Agent": "Mozilla/5.0",
+      "Authorization": "NIS xxxx",
+      "Content-Type": "application/json"
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  print(response.text)</code></pre>
+<hr>
+</li>
+</ol>
+</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function readmd() {
+		xhr = new XMLHttpRequest();
+		xhr.open('get', '/doc/api_study.md');
+		xhr.send('')
+		xhr.onload = function () {
+			console.log()
+			$('.md_render').html(marked(xhr.responseText));
+		}
+	}
+	readmd();
+</script>
+            </div>
+
+            
+        </div>
+        <footer id="footer" style="display: block;">
+            <div class="show-fixed pull-right">
+                You have <a href="https://my.eudic.net/OpenAPI/doc_api_study#" class="text-bold text-main"><span class="label label-danger">3</span> pending action.</a>
+            </div>
+            <div class="hide-fixed pull-right pad-rgt">
+                <a href="https://dict.eudic.net/">欧路软件</a> ©2026 <span></span>
+            </div>
+        </footer>
+        <button class="scroll-top btn" style="animation: 0.8s ease 0s 1 normal none running jellyIn;">
+            <i class="pci-chevron chevron-up"></i>
+        </button>
+    </div>
+    <script src="./eudic-develop-guide_files/jquery.min.js"></script>
+
+    <script src="./eudic-develop-guide_files/bootstrap.min.js" asp-append-version="true"></script>
+
+    <script src="./eudic-develop-guide_files/common.min.js" asp-append-version="true"></script>
+    <script src="./eudic-develop-guide_files/layer.js" defer="defer"></script>
+    
+
+
+</body></html>
