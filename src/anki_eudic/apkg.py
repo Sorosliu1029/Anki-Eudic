@@ -11,7 +11,7 @@ import hashlib
 import html
 import re
 import tempfile
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
@@ -228,11 +228,13 @@ def export_apkg(
     dictionary: Dictionary | None = None,
     *,
     audio: bool = True,
+    progress: Callable[[int], None] | None = None,
 ) -> ExportSummary:
     """Write an Anki package, adding LDOCE content when ``dictionary`` is given.
 
     Words found in the dictionary use its content instead of Eudic's explanation. With
     ``audio``, pronunciations are read via ``dictionary.resource`` and bundled.
+    ``progress`` is called with the number of notes written so far after each note.
     """
     path = Path(destination).expanduser().with_suffix(".apkg")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -279,6 +281,8 @@ def export_apkg(
                 )
             )
             notes += 1
+            if progress is not None:
+                progress(notes)
         package = genanki.Package(anki_deck, media_files=[str(p) for p in media.values()])
         package.write_to_file(str(path))
     return ExportSummary(path, notes, enriched, len(media))

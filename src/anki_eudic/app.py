@@ -2,256 +2,289 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import ClassVar
 
-from textual import work
+from rich.text import Text
+from textual import events, on, work
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, VerticalScroll
-from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Select, Static
+from textual.binding import Binding
+from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.screen import ModalScreen
+from textual.widgets import DataTable, Footer, Header, Input, Label, OptionList, Static
+from textual.widgets.option_list import Option
 
-from .apkg import export_apkg
-from .auth import CredentialError, delete_token, load_token, normalize_token, save_token
+from .auth import CredentialError, load_token
 from .client import EudicClient, EudicError
-from .dictionary import LdoceDictionary
-from .mdict import MdictError
 from .models import Category, Word
+from .screens import Connection, ExportScreen, ExportSettings, TokenScreen, default_dictionary
 
-DICTIONARY_ENV = "ANKI_EUDIC_LDOCE"
+
+def matches(word: Word, query: str) -> bool:
+    """Case-insensitively match ``query`` against the word, explanation or context."""
+    needle = query.strip().casefold()
+    return not needle or any(
+        needle in field.casefold() for field in (word.word, word.explanation, word.context)
+    )
 
 
-def default_dictionary() -> str:
-    """Return ``$ANKI_EUDIC_LDOCE`` or an LDOCE5++ ``.mdx`` in Eudic's macOS library, if any."""
-    if configured := os.environ.get(DICTIONARY_ENV):
-        return configured
-    found = sorted((Path.home() / "Library" / "Eudb_en").glob("LDOCE5*.mdx"))
-    return str(found[0]) if found else ""
+def _one_line(value: str, limit: int = 80) -> str:
+    text = " ".join(value.split())
+    return text if len(text) <= limit else text[: limit - 1] + "…"
 
 
 class AnkiEudicApp(App[None]):
-    """Fetch a Eudic study list, preview it, and export it for Anki."""
+    """Browse Eudic study lists and export one to Anki."""
 
     TITLE = "Anki Eudic"
     SUB_TITLE = "Study-list exporter"
     CSS = """
-    Screen { align: center top; }
-    #content { width: 94%; max-width: 120; padding: 1 2; }
-    .section { margin-top: 1; text-style: bold; color: $accent; }
-    Input, Select { margin-bottom: 1; }
-    Button { margin-right: 1; }
-    #status { margin: 1 0; padding: 1; background: $surface; min-height: 3; }
-    #preview { height: 1fr; min-height: 12; }
-    #token-help, #dictionary-help { color: $text-muted; margin-bottom: 1; }
+    #body { height: 1fr; }
+    #sidebar { width: 34; border-right: vkey $primary-background; }
+    .pane-title { text-style: bold; color: $accent; padding: 0 1; height: 1; }
+    #lists { height: 1fr; border: none; }
+    #main { width: 1fr; }
+    #toolbar { height: 3; padding: 0 1; }
+    #summary { width: 1fr; height: 3; content-align: left middle; }
+    #filter { width: 36; }
+    #preview { height: 1fr; }
+    #detail-pane { height: 9; border-top: hkey $primary-background; padding: 0 1; }
     """
-    BINDINGS: ClassVar[list[tuple[str, str, str]]] = [
+    BINDINGS: ClassVar[list[Binding | tuple[str, str, str]]] = [
         ("q", "quit", "Quit"),
-        ("r", "refresh", "Refresh lists"),
+        ("r", "refresh", "Refresh"),
+        ("e", "export", "Export"),
+        Binding("slash", "focus_filter", "Filter", key_display="/"),
+        ("t", "token", "Token"),
     ]
 
     def __init__(self) -> None:
         super().__init__()
         self.token: str | None = None
         self.categories: list[Category] = []
+        self.cache: dict[str, list[Word]] = {}
+        self.category: Category | None = None
         self.words: list[Word] = []
+        self.shown: list[Word] = []
+        self.settings = ExportSettings(
+            destination=str(Path.cwd() / "eudic-words.apkg"), dictionary=default_dictionary()
+        )
 
     def compose(self) -> ComposeResult:
         yield Header()
-        with VerticalScroll(id="content"):
-            yield Label("1. Eudic authorization", classes="section")
-            yield Input(
-                placeholder="Paste an API token (optionally including the 'NIS ' prefix)",
-                password=True,
-                id="token",
-            )
-            yield Static(
-                "Saved tokens go only to your operating system's credential store. "
-                "Alternatively, set EUDIC_TOKEN for the current process.",
-                id="token-help",
-            )
-            with Horizontal():
-                yield Button("Save token", variant="primary", id="save-token")
-                yield Button("Forget saved token", variant="warning", id="forget-token")
-                yield Button("Load study lists", id="load-categories")
-            yield Label("2. Select words", classes="section")
-            yield Select([], prompt="Load and select a Eudic study list", id="category")
-            with Horizontal():
-                yield Button("Fetch words", variant="primary", id="fetch", disabled=True)
-            yield Label("3. Export for Anki", classes="section")
-            yield Input(value=str(Path.cwd() / "eudic-words.apkg"), id="destination")
-            yield Input(value="Eudic", placeholder="Anki deck name", id="deck")
-            yield Input(
-                value=default_dictionary(),
-                placeholder="Optional LDOCE5++ .mdx path (adds definitions and audio)",
-                id="dictionary",
-            )
-            yield Static(
-                f"The .mdd next to it supplies audio. Set {DICTIONARY_ENV} to change the default.",
-                id="dictionary-help",
-            )
-            yield Button("Export", variant="success", id="export", disabled=True)
-            yield Static("Ready. Add a token to begin.", id="status")
-            yield DataTable(id="preview", zebra_stripes=True)
+        with Horizontal(id="body"):
+            with Vertical(id="sidebar"):
+                yield Label("Study lists", classes="pane-title")
+                yield OptionList(id="lists")
+            with Vertical(id="main"):
+                with Horizontal(id="toolbar"):
+                    yield Static("", id="summary")
+                    yield Input(placeholder="Filter words  ( / )", id="filter")
+                yield DataTable(id="preview", zebra_stripes=True, cursor_type="row")
+                with VerticalScroll(id="detail-pane"):
+                    yield Static("", id="detail")
         yield Footer()
 
     def on_mount(self) -> None:
         table = self.query_one("#preview", DataTable)
-        table.add_columns("Word", "Phonetic", "Definition", "Context")
+        table.add_column("Word", width=20)
+        table.add_column("Phonetic", width=16)
+        table.add_column("★", width=3)
+        table.add_column("Explanation")
         try:
             self.token = load_token()
         except CredentialError as exc:
-            self._status(str(exc), error=True)
-            return
+            self.notify(str(exc), severity="error", timeout=10)
         if self.token:
-            self._status("Token loaded from the environment or secure credential store.")
             self.load_categories()
+        else:
+            self._summary("Not connected — press [b]t[/b] to add your Eudic token.")
+            self.action_token()
 
-    def _status(self, message: str, *, error: bool = False) -> None:
-        prefix = "[bold red]Error:[/bold red] " if error else "[bold green]Status:[/bold green] "
-        self.query_one("#status", Static).update(prefix + message)
+    # Display helpers
 
-    def _entered_or_loaded_token(self) -> str:
-        entered = self.query_one("#token", Input).value
-        if entered:
-            return normalize_token(entered)
+    def _summary(self, message: str) -> None:
+        self.query_one("#summary", Static).update(message)
+
+    def _error(self, message: str) -> None:
+        self.notify(message, title="Error", severity="error", timeout=8)
+
+    def _show_categories(self) -> None:
+        lists = self.query_one("#lists", OptionList)
+        lists.clear_options()
+        lists.add_options(
+            Option(f"{item.name} ({item.language})", id=item.id) for item in self.categories
+        )
+        if not self.categories:
+            self._summary("Your Eudic account has no study lists.")
+        elif len(self.categories) == 1:
+            self.open_category(self.categories[0])
+        else:
+            self._summary("Select a study list to preview its words.")
+            lists.highlighted = 0
+            lists.focus()
+
+    def _show_words(self) -> None:
+        query = self.query_one("#filter", Input).value
+        self.shown = [item for item in self.words if matches(item, query)]
+        table = self.query_one("#preview", DataTable)
+        table.clear()
+        for index, item in enumerate(self.shown):
+            table.add_row(
+                item.word,
+                item.phonetic,
+                str(item.star or ""),
+                _one_line(item.explanation),
+                key=str(index),
+            )
+        self._show_detail(0)
+        if self.category is not None:
+            count = (
+                f"{len(self.shown)} of {len(self.words)} words"
+                if query.strip()
+                else f"{len(self.words)} words"
+            )
+            self._summary(f"[b]{self.category.name}[/b] · {count}")
+        self.refresh_bindings()
+
+    def _show_detail(self, row: int) -> None:
+        detail = self.query_one("#detail", Static)
+        if not self.shown or not 0 <= row < len(self.shown):
+            detail.update(Text("No word selected.", style="dim") if self.words else "")
+            return
+        item = self.shown[row]
+        text = Text()
+        text.append(item.word, style="bold")
+        if item.phonetic:
+            text.append(f"  /{item.phonetic.strip('/')}/", style="italic")
+        if item.star:
+            text.append("  " + "★" * item.star, style="yellow")
+        if item.added_at:
+            text.append(f"  added {item.added_at}", style="dim")
+        if item.explanation:
+            text.append("\n" + item.explanation.strip())
+        if item.context:
+            text.append("\nContext: ", style="bold")
+            text.append(item.context.strip())
+        detail.update(text)
+
+    # Events
+
+    @on(OptionList.OptionSelected, "#lists")
+    def _list_selected(self, event: OptionList.OptionSelected) -> None:
+        category = next((item for item in self.categories if item.id == event.option.id), None)
+        if category is not None:
+            self.open_category(category)
+
+    @on(Input.Changed, "#filter")
+    def _filter_changed(self) -> None:
+        self._show_words()
+
+    @on(Input.Submitted, "#filter")
+    def _filter_submitted(self) -> None:
+        self.query_one("#preview", DataTable).focus()
+
+    @on(DataTable.RowHighlighted, "#preview")
+    def _row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        self._show_detail(event.cursor_row)
+
+    def on_key(self, event: events.Key) -> None:
+        filter_input = self.query_one("#filter", Input)
+        if event.key == "escape" and self.focused is filter_input:
+            filter_input.value = ""
+            self.query_one("#preview", DataTable).focus()
+            event.stop()
+
+    # Actions
+
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if isinstance(self.screen, ModalScreen):
+            return action not in {"quit", "refresh", "export", "focus_filter", "token"}
+        if action == "export":
+            return bool(self.words)
+        return True
+
+    def action_refresh(self) -> None:
         if self.token:
-            return self.token
-        raise ValueError("Enter and save a Eudic API token first.")
+            self.load_categories()
+        else:
+            self.action_token()
 
-    def on_select_changed(self, event: Select.Changed) -> None:
-        if event.select.id == "category":
-            self.query_one("#fetch", Button).disabled = event.value is Select.BLANK
+    def action_focus_filter(self) -> None:
+        self.query_one("#filter", Input).focus()
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        match event.button.id:
-            case "save-token":
-                self._save_token()
-            case "forget-token":
-                self._forget_token()
-            case "load-categories":
-                self.load_categories()
-            case "fetch":
-                self.fetch_words()
-            case "export":
-                self._export()
+    def action_token(self) -> None:
+        if not isinstance(self.screen, TokenScreen):
+            self.push_screen(TokenScreen(has_token=bool(self.token)), self._connected)
 
-    def _save_token(self) -> None:
-        try:
-            token = normalize_token(self.query_one("#token", Input).value)
-            save_token(token)
-        except (ValueError, CredentialError) as exc:
-            self._status(str(exc), error=True)
+    def action_export(self) -> None:
+        if self.words and self.category is not None:
+            self.push_screen(ExportScreen(self.words, self.category.name, self.settings))
+
+    def _connected(self, connection: Connection | None) -> None:
+        if connection is None:
+            if not self.token:
+                self._summary("Not connected — press [b]t[/b] to add your Eudic token.")
             return
-        self.token = token
-        self.query_one("#token", Input).clear()
-        self._status("Token saved securely. Its value has been cleared from the screen.")
-        self.load_categories()
+        self.token = connection.token
+        self.categories = connection.categories
+        self.cache.clear()
+        self.notify(f"Connected. Loaded {len(self.categories)} study list(s).")
+        self._show_categories()
 
-    def _forget_token(self) -> None:
-        try:
-            delete_token()
-        except CredentialError as exc:
-            self._status(str(exc), error=True)
-            return
-        self.token = None
-        self.query_one("#token", Input).clear()
-        self._status("Saved token removed. An EUDIC_TOKEN environment value is unaffected.")
+    # Workers
 
     @work(thread=True, exclusive=True, group="api")
     def load_categories(self) -> None:
+        lists = self.query_one("#lists", OptionList)
+        self.call_from_thread(setattr, lists, "loading", True)
         try:
-            token = self.call_from_thread(self._entered_or_loaded_token)
-            with EudicClient(token) as client:
+            with EudicClient(self.token or "") as client:
                 categories = client.categories()
-        except (ValueError, EudicError) as exc:
-            self.call_from_thread(self._status, str(exc), error=True)
+        except EudicError as exc:
+            self.call_from_thread(self._error, str(exc))
+            self.call_from_thread(self._summary, "Could not load study lists — press [b]r[/b].")
             return
+        finally:
+            self.call_from_thread(setattr, lists, "loading", False)
         self.categories = categories
+        self.cache.clear()
         self.call_from_thread(self._show_categories)
 
-    def _show_categories(self) -> None:
-        select = self.query_one("#category", Select)
-        select.set_options((f"{item.name} ({item.language})", item.id) for item in self.categories)
-        self._status(f"Loaded {len(self.categories)} study list(s). Choose one to continue.")
+    def open_category(self, category: Category) -> None:
+        self.category = category
+        if category.id in self.cache:
+            self.words = self.cache[category.id]
+            self._show_words()
+            self.query_one("#preview", DataTable).focus()
+        else:
+            self.words = []
+            self._show_words()
+            self.fetch_words(category)
 
     @work(thread=True, exclusive=True, group="api")
-    def fetch_words(self) -> None:
-        selected = self.call_from_thread(lambda: self.query_one("#category", Select).value)
-        if selected is Select.BLANK:
-            self.call_from_thread(self._status, "Choose a study list first.", error=True)
-            return
-        category = next((item for item in self.categories if item.id == str(selected)), None)
-        if category is None:
-            self.call_from_thread(
-                self._status, "The selected study list is no longer available.", error=True
-            )
-            return
+    def fetch_words(self, category: Category) -> None:
+        table = self.query_one("#preview", DataTable)
+        self.call_from_thread(setattr, table, "loading", True)
+        self.call_from_thread(self._summary, f"Loading “{category.name}”…")
         try:
-            token = self.call_from_thread(self._entered_or_loaded_token)
-            with EudicClient(token) as client:
+            with EudicClient(self.token or "") as client:
                 words = client.words(category.id, category.language)
-        except (ValueError, EudicError) as exc:
-            self.call_from_thread(self._status, str(exc), error=True)
+        except EudicError as exc:
+            self.call_from_thread(self._error, str(exc))
+            self.call_from_thread(self._summary, f"Could not load “{category.name}”.")
+            return
+        finally:
+            self.call_from_thread(setattr, table, "loading", False)
+        self.cache[category.id] = words
+        self.call_from_thread(self._words_loaded, category, words)
+
+    def _words_loaded(self, category: Category, words: list[Word]) -> None:
+        if self.category != category:
             return
         self.words = words
-        self.call_from_thread(self._show_words, category.name)
-
-    def _show_words(self, category_name: str) -> None:
-        table = self.query_one("#preview", DataTable)
-        table.clear()
-        for item in self.words[:500]:
-            table.add_row(item.word, item.phonetic, item.explanation, item.context)
-        self.query_one("#export", Button).disabled = not self.words
-        suffix = " (preview limited to 500)" if len(self.words) > 500 else ""
-        self._status(f"Fetched {len(self.words)} word(s) from “{category_name}”{suffix}.")
-
-    def _export(self) -> None:
-        destination = self.query_one("#destination", Input).value.strip()
-        deck = self.query_one("#deck", Input).value.strip() or "Eudic"
-        if not destination:
-            self._status("Choose an export filename.", error=True)
-            return
-        mdx = self.query_one("#dictionary", Input).value.strip()
-        self.query_one("#export", Button).disabled = True
-        self._status("Exporting…" + (" Looking up words in LDOCE." if mdx else ""))
-        self.export_package(destination, deck, mdx)
-
-    @work(thread=True, exclusive=True, group="export")
-    def export_package(self, destination: str, deck: str, mdx: str) -> None:
-        try:
-            if mdx:
-                mdx_path = Path(mdx).expanduser()
-                if not mdx_path.is_file():
-                    raise FileNotFoundError(f"Dictionary not found: {mdx_path}")
-                mdd_path = mdx_path.with_suffix(".mdd")
-                has_audio = mdd_path.is_file()
-                with LdoceDictionary(mdx_path, mdd_path if has_audio else None) as dictionary:
-                    summary = export_apkg(
-                        self.words, destination, deck, dictionary, audio=has_audio
-                    )
-            else:
-                summary = export_apkg(self.words, destination, deck)
-        except (OSError, MdictError) as exc:
-            self.call_from_thread(self._status, f"Could not write the export: {exc}", error=True)
-        else:
-            enriched = (
-                f", {summary.enriched} enriched from LDOCE with {summary.audio} audio file(s)"
-                if mdx
-                else ""
-            )
-            self.call_from_thread(
-                self._status,
-                f"Exported {summary.notes} note(s){enriched} to {summary.path}. "
-                "Import it in Anki with File → Import; re-importing updates existing notes.",
-            )
-        finally:
-            self.call_from_thread(self._enable_export)
-
-    def _enable_export(self) -> None:
-        self.query_one("#export", Button).disabled = not self.words
-
-    def action_refresh(self) -> None:
-        self.load_categories()
+        self._show_words()
+        self.query_one("#preview", DataTable).focus()
 
 
 def main() -> None:
