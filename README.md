@@ -1,7 +1,8 @@
 # Anki Eudic
 
 A small Python/Textual application that downloads an **unknown or unfamiliar word
-list** from Eudic and exports it as an Anki-ready, tab-separated text file. The API
+list** from Eudic and exports it as an Anki deck (`.apkg`), optionally enriched with
+definitions, examples and pronunciation audio from a local LDOCE5++ dictionary. The API
 implementation follows the Eudic development guide included in this repository,
 including the category and paginated word-list endpoints.
 
@@ -11,9 +12,12 @@ including the category and paginated word-list endpoints.
   and choosing the Anki export location and deck name.
 - Fetches every API page (up to Eudic's documented maximum page size of 100) and
   removes case-insensitive duplicates.
-- Exports word, definition, context, phonetic spelling, added date, and star rating.
-- Produces UTF-8 TSV with Anki file headers, HTML-safe content, and preserved line
-  breaks. No Anki add-on or running Anki instance is required.
+- Exports an Anki package (`.apkg`) with BrE/AmE IPA and audio, part of speech,
+  numbered senses with Chinese translations and examples, collocations and word origin
+  from LDOCE5++, plus Eudic's own explanation, context, added date and star rating.
+- Re-exporting the same list updates existing notes in place and keeps review progress.
+- Can still produce UTF-8 TSV with Anki file headers instead. No Anki add-on or running
+  Anki instance is required for either format.
 - Keeps the authorization token out of the repository and export. Persisted tokens
   are stored by `keyring` in the operating system's credential service—not in a
   plaintext settings file.
@@ -61,12 +65,28 @@ removes only the credential-store value.
 1. Start `anki-eudic` (or `python -m anki_eudic`).
 2. Save/provide a token, then load the study lists.
 3. Pick the list where you keep unknown or unfamiliar words and select **Fetch words**.
-4. Review the preview, choose a `.tsv`/`.txt` destination and deck, and export.
-5. In Anki Desktop, choose **File → Import**, select the output file, map the six
-   columns if necessary, and enable duplicate handling appropriate for your deck.
+4. Review the preview, then choose the format, destination, deck and (for `.apkg`)
+   the LDOCE5++ `.mdx` path, and export. The dictionary path defaults to
+   `$ANKI_EUDIC_LDOCE` or an `LDOCE5*.mdx` in `~/Library/Eudb_en`; leave it empty to
+   export Eudic's data only. Audio comes from the `.mdd` file next to the `.mdx`.
+5. In Anki Desktop, choose **File → Import** and select the output file.
 
-The first field is the spelling, so mapping **Word** to the note type's first field
-lets Anki identify duplicates. The exported headers select tab separation, HTML,
+### `.apkg` (default)
+
+Notes use the **Anki-Eudic Word** note type (fields: Word, Phonetic, AudioUK, AudioUS,
+PartOfSpeech, Definition, Explanation, Context, Extra, Added, Star). Each note is
+identified by its lower-cased word, so exporting the list again later and importing
+with the default **Update notes: if newer** updates existing cards without resetting
+their progress, and adds new words. Words removed from Eudic are not deleted in Anki.
+Audio files are named `ldoce_<accent>_<name>.mp3` in Anki's media folder. Sync to
+AnkiWeb from Anki as usual. See [docs/anki-development.md](docs/anki-development.md)
+for the details.
+
+### `.tsv`
+
+Map the six columns if necessary and enable duplicate handling appropriate for your
+deck. The first field is the spelling, so mapping **Word** to the note type's first
+field lets Anki identify duplicates. The exported headers select tab separation, HTML,
 and the chosen deck automatically on Anki versions that support text-file headers.
 
 ## Keyboard shortcuts
@@ -78,7 +98,7 @@ and the chosen deck automatically on Anki versions that support text-file header
 
 `anki_eudic.dictionary` reads a local *Longman Dictionary of Contemporary English
 5++* MDict dictionary (the `.mdx` entries plus the optional `.mdd` audio/resources).
-It is a library API only; it is not wired into the TUI or the export yet.
+The `.apkg` export uses it; it can also be used directly as a library.
 
 ```python
 from anki_eudic.dictionary import LdoceDictionary
