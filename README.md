@@ -113,6 +113,24 @@ uv run ruff check .
 uv run ruff format .
 ```
 
+### Releasing
+
+The version lives only in `pyproject.toml` (`anki_eudic.__version__` reads it from the
+installed metadata). From an up-to-date `master` with tests passing:
+
+```bash
+uv version --bump minor            # or patch / major; updates pyproject.toml and uv.lock
+git commit -am "Release v$(uv version --short)"   # via a PR, then merge
+git tag "v$(uv version --short)" && git push origin "v$(uv version --short)"
+
+rm -rf dist && uv build            # sdist and wheel in dist/
+uvx twine check dist/*
+uvx twine upload dist/*            # reads the [pypi] token from ~/.pypirc
+gh release create "v$(uv version --short)" dist/* --generate-notes
+```
+
+`uv publish` works too, with the token in `UV_PUBLISH_TOKEN`.
+
 Layout:
 
 | Path | Contents |
