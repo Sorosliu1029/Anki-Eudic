@@ -19,7 +19,6 @@ from typing import Protocol
 import genanki
 
 from .dictionary import DictionaryEntry, Sense
-from .exporter import _field
 from .models import Word
 
 # Never change these: a new model ID or field list makes Anki import a second note type
@@ -28,7 +27,8 @@ MODEL_ID = 1_761_189_143
 GUID_NAMESPACE = "anki-eudic"
 FIELDS = (
     "Word",
-    "Phonetic",
+    "PhoneticUK",
+    "PhoneticUS",
     "AudioUK",
     "AudioUS",
     "PartOfSpeech",
@@ -46,12 +46,16 @@ MAX_COLLOCATIONS = 12
 
 _FRONT = """\
 <div class="word">{{Word}}</div>
-{{AudioUK}}
+<div class="phonetic">
+<span class="pron">{{#PhoneticUK}}<span class="accent">BrE</span> {{PhoneticUK}}{{/PhoneticUK}} \
+{{AudioUK}}</span>
+<span class="pron">{{#PhoneticUS}}<span class="accent">AmE</span> {{PhoneticUS}}{{/PhoneticUS}} \
+{{AudioUS}}</span>
+</div>
 """
 _BACK = """\
 {{FrontSide}}
 <hr id="answer">
-{{#Phonetic}}<div class="phonetic">{{Phonetic}} {{AudioUS}}</div>{{/Phonetic}}
 {{#Definition}}<div class="definition">{{Definition}}</div>{{/Definition}}
 {{#Explanation}}<div class="explanation">{{Explanation}}</div>{{/Explanation}}
 {{#Context}}<div class="context">{{Context}}</div>{{/Context}}
@@ -62,6 +66,8 @@ _CSS = """\
   text-align: left; max-width: 46em; margin: 0 auto; }
 .word { font-size: 2em; font-weight: 600; text-align: center; }
 .phonetic { color: #666; text-align: center; margin-bottom: .8em; }
+.pron { white-space: nowrap; margin: 0 .6em; }
+.accent { font-size: .7em; font-weight: 600; color: #2a6db0; }
 .pos { font-style: italic; color: #b03060; font-weight: 600; }
 .signpost { background: #2a6db0; color: #fff; font-size: .75em; padding: 0 .3em;
   border-radius: 3px; text-transform: uppercase; }
@@ -118,14 +124,23 @@ def media_name(path: str) -> str:
     return "ldoce_" + re.sub(r"[^A-Za-z0-9._-]+", "_", stem)
 
 
+def _field(value: str) -> str:
+    """Escape untrusted API content and preserve visual line breaks in Anki."""
+    return (
+        html.escape(value, quote=False)
+        .replace("\r\n", "\n")
+        .replace("\r", "\n")
+        .replace("\n", "<br>")
+        .replace("\t", "    ")
+    )
+
+
 def _text(value: str) -> str:
     return html.escape(value, quote=False)
 
 
-def _ipa(bre: str, ame: str) -> str:
-    if ame and bre and ame != bre:
-        return f"BrE /{bre}/ · AmE /{ame}/"
-    return f"/{bre or ame}/" if bre or ame else ""
+def _ipa(value: str) -> str:
+    return f"/{_text(value)}/" if value else ""
 
 
 def _span(css: str, value: str) -> str:
@@ -163,7 +178,7 @@ def _render_sense(sense: Sense) -> str:
 
 
 def render_entry(entry: DictionaryEntry) -> dict[str, str]:
-    """Render an LDOCE entry into the HTML of the Phonetic/PartOfSpeech/Definition/Extra fields."""
+    """Render an LDOCE entry into the HTML of its note fields (all but audio and Eudic's)."""
     pronunciation = entry.pronunciation
     blocks = []
     for homograph in entry.homographs:
@@ -187,7 +202,8 @@ def render_entry(entry: DictionaryEntry) -> dict[str, str]:
         extra.append("<b>Collocations:</b> " + _text(", ".join(collocations[:MAX_COLLOCATIONS])))
     extra += [_text(origin) for origin in entry.origins]
     return {
-        "Phonetic": _text(_ipa(pronunciation.ipa_bre, pronunciation.ipa_ame)),
+        "PhoneticUK": _ipa(pronunciation.ipa_bre),
+        "PhoneticUS": _ipa(pronunciation.ipa_ame),
         "PartOfSpeech": _text(", ".join(entry.parts_of_speech)),
         "Definition": "".join(blocks),
         "Extra": "<br>".join(extra),
@@ -204,7 +220,8 @@ def export_apkg(
 ) -> ExportSummary:
     """Write an Anki package, adding LDOCE content when ``dictionary`` is given.
 
-    With ``audio``, pronunciations are read via ``dictionary.resource`` and bundled.
+    Words found in the dictionary use its content instead of Eudic's explanation. With
+    ``audio``, pronunciations are read via ``dictionary.resource`` and bundled.
     """
     path = Path(destination).expanduser().with_suffix(".apkg")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -229,7 +246,7 @@ def export_apkg(
             fields: dict[str, str] = dict.fromkeys(FIELDS, "")
             fields.update(
                 Word=_field(item.word),
-                Phonetic=_text(_ipa(item.phonetic, "")),
+                PhoneticUK=_ipa(item.phonetic),
                 Explanation=_field(item.explanation),
                 Context=_field(item.context),
                 Added=_field(item.added_at),
@@ -239,6 +256,7 @@ def export_apkg(
             if entry is not None and entry.homographs:
                 rendered = render_entry(entry)
                 fields.update({key: value for key, value in rendered.items() if value})
+                fields["Explanation"] = ""
                 fields["AudioUK"] = sound(entry.pronunciation.audio_bre)
                 fields["AudioUS"] = sound(entry.pronunciation.audio_ame)
                 enriched += 1

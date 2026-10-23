@@ -14,10 +14,10 @@ including the category and paginated word-list endpoints.
   removes case-insensitive duplicates.
 - Exports an Anki package (`.apkg`) with BrE/AmE IPA and audio, part of speech,
   numbered senses with Chinese translations and examples, collocations and word origin
-  from LDOCE5++, plus Eudic's own explanation, context, added date and star rating.
+  from LDOCE5++, plus Eudic's context, added date and star rating. Eudic's own
+  explanation is used only for words the dictionary does not have.
 - Re-exporting the same list updates existing notes in place and keeps review progress.
-- Can still produce UTF-8 TSV with Anki file headers instead. No Anki add-on or running
-  Anki instance is required for either format.
+- No Anki add-on or running Anki instance is required.
 - Keeps the authorization token out of the repository and export. Persisted tokens
   are stored by `keyring` in the operating system's credential service—not in a
   plaintext settings file.
@@ -65,16 +65,16 @@ removes only the credential-store value.
 1. Start `anki-eudic` (or `python -m anki_eudic`).
 2. Save/provide a token, then load the study lists.
 3. Pick the list where you keep unknown or unfamiliar words and select **Fetch words**.
-4. Review the preview, then choose the format, destination, deck and (for `.apkg`)
-   the LDOCE5++ `.mdx` path, and export. The dictionary path defaults to
+4. Review the preview, then choose the destination, deck and LDOCE5++ `.mdx` path,
+   and export. The dictionary path defaults to
    `$ANKI_EUDIC_LDOCE` or an `LDOCE5*.mdx` in `~/Library/Eudb_en`; leave it empty to
    export Eudic's data only. Audio comes from the `.mdd` file next to the `.mdx`.
 5. In Anki Desktop, choose **File → Import** and select the output file.
 
-### `.apkg` (default)
-
-Notes use the **Anki-Eudic Word** note type (fields: Word, Phonetic, AudioUK, AudioUS,
-PartOfSpeech, Definition, Explanation, Context, Extra, Added, Star). Each note is
+Notes use the **Anki-Eudic Word** note type (fields: Word, PhoneticUK, PhoneticUS,
+AudioUK, AudioUS, PartOfSpeech, Definition, Explanation, Context, Extra, Added, Star).
+The front shows the word with British and American IPA and audio; the back adds the
+definitions and the rest. Each note is
 identified by its lower-cased word, so exporting the list again later and importing
 with the default **Update notes: if newer** updates existing cards without resetting
 their progress, and adds new words. Words removed from Eudic are not deleted in Anki.
@@ -82,12 +82,6 @@ Audio files are named `ldoce_<accent>_<name>.mp3` in Anki's media folder. Sync t
 AnkiWeb from Anki as usual. See [docs/anki-development.md](docs/anki-development.md)
 for the details.
 
-### `.tsv`
-
-Map the six columns if necessary and enable duplicate handling appropriate for your
-deck. The first field is the spelling, so mapping **Word** to the note type's first
-field lets Anki identify duplicates. The exported headers select tab separation, HTML,
-and the chosen deck automatically on Anki versions that support text-file headers.
 
 ## Keyboard shortcuts
 

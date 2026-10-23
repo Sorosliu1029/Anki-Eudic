@@ -101,7 +101,8 @@ def test_media_name_is_ascii_and_keeps_accent_directory() -> None:
 def test_render_entry_escapes_and_limits_examples() -> None:
     fields = render_entry(ZORBLE)
 
-    assert fields["Phonetic"] == "BrE /ˈzɔːbəl/ · AmE /ˈzɔːrbəl/"
+    assert fields["PhoneticUK"] == "/ˈzɔːbəl/"
+    assert fields["PhoneticUS"] == "/ˈzɔːrbəl/"
     assert fields["PartOfSpeech"] == "verb"
     definition = fields["Definition"]
     assert "to roll &lt;downhill&gt; in a ball" in definition
@@ -111,11 +112,6 @@ def test_render_entry_escapes_and_limits_examples() -> None:
     assert "a subsense" in definition
     assert definition.count("[intransitive]") == 1
     assert "invented" in fields["Extra"]
-
-
-def test_render_entry_merges_identical_ipa() -> None:
-    entry = DictionaryEntry("x", "x", (Homograph("x", pronunciation=Pronunciation("eks", "eks")),))
-    assert render_entry(entry)["Phonetic"] == "/eks/"
 
 
 def test_export_without_dictionary_uses_eudic_fields(tmp_path: Path) -> None:
@@ -130,7 +126,7 @@ def test_export_without_dictionary_uses_eudic_fields(tmp_path: Path) -> None:
     notes, media, models = read_package(summary.path)
     guid, fields = notes[0]
     assert guid == note_guid("one")
-    assert fields["Phonetic"] == "/wʌn/"
+    assert fields["PhoneticUK"] == "/wʌn/" and fields["PhoneticUS"] == ""
     assert fields["Explanation"] == "&lt;b&gt;num.&lt;/b&gt;<br>一"
     assert fields["Context"] == "a    b"
     assert fields["Star"] == "2"
@@ -143,7 +139,10 @@ def test_export_with_dictionary_bundles_audio(tmp_path: Path) -> None:
     dictionary = FakeDictionary({"zorble": ZORBLE}, {BRE: b"uk-mp3", AME: b"us-mp3"})
 
     summary = export_apkg(
-        [Word("Zorble", phonetic="ignored"), Word("missing", phonetic="mɪsɪŋ")],
+        [
+            Word("Zorble", phonetic="ignored", explanation="eudic", context="ctx"),
+            Word("missing", phonetic="mɪsɪŋ", explanation="eudic"),
+        ],
         tmp_path / "out.apkg",
         dictionary=dictionary,
     )
@@ -153,8 +152,10 @@ def test_export_with_dictionary_bundles_audio(tmp_path: Path) -> None:
     zorble, missing = (fields for _, fields in notes)
     assert zorble["AudioUK"] == "[sound:ldoce_breProns_zorble0101.mp3]"
     assert zorble["AudioUS"] == "[sound:ldoce_ameProns_zorble.mp3]"
-    assert zorble["Phonetic"].startswith("BrE /ˈzɔːbəl/")
-    assert missing["Phonetic"] == "/mɪsɪŋ/" and missing["AudioUK"] == ""
+    assert zorble["PhoneticUK"] == "/ˈzɔːbəl/"
+    assert zorble["Explanation"] == "" and zorble["Context"] == "ctx"
+    assert missing["PhoneticUK"] == "/mɪsɪŋ/" and missing["AudioUK"] == ""
+    assert missing["Explanation"] == "eudic"
     assert media == {
         "ldoce_breProns_zorble0101.mp3": "uk-mp3",
         "ldoce_ameProns_zorble.mp3": "us-mp3",
@@ -183,14 +184,14 @@ def test_reexport_updates_notes_in_anki(tmp_path: Path) -> None:
         )
 
     try:
-        import_package(export_apkg([Word("one", explanation="v1")], tmp_path / "a.apkg").path)
+        import_package(export_apkg([Word("one", context="v1")], tmp_path / "a.apkg").path)
         # genanki stamps notes with whole seconds; make the imported note look older.
         collection.db.execute("UPDATE notes SET mod = mod - 10")
-        import_package(export_apkg([Word("ONE", explanation="v2")], tmp_path / "b.apkg").path)
+        import_package(export_apkg([Word("ONE", context="v2")], tmp_path / "b.apkg").path)
 
         note_ids = collection.find_notes("")
         assert len(note_ids) == 1
-        assert collection.get_note(note_ids[0])["Explanation"] == "v2"
+        assert collection.get_note(note_ids[0])["Context"] == "v2"
     finally:
         collection.close()
 
@@ -209,7 +210,7 @@ def test_export_with_real_dictionary(tmp_path: Path) -> None:
     notes, media, _ = read_package(summary.path)
     fields = notes[0][1]
     assert summary.enriched == 1 and summary.audio == 2
-    assert "prəˈnaʊns" in fields["Phonetic"]
+    assert fields["PhoneticUK"] == fields["PhoneticUS"] == "/prəˈnaʊns/"
     assert "How do you pronounce your name?" in fields["Definition"]
     assert fields["AudioUK"] == "[sound:ldoce_breProns_pronounce0205.mp3]"
     assert set(media) == {"ldoce_breProns_pronounce0205.mp3", "ldoce_ameProns_pronounce.mp3"}

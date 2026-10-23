@@ -15,12 +15,10 @@ from .apkg import export_apkg
 from .auth import CredentialError, delete_token, load_token, normalize_token, save_token
 from .client import EudicClient, EudicError
 from .dictionary import LdoceDictionary
-from .exporter import export_anki
 from .mdict import MdictError
 from .models import Category, Word
 
 DICTIONARY_ENV = "ANKI_EUDIC_LDOCE"
-FORMATS = {"apkg": ".apkg", "tsv": ".tsv"}
 
 
 def default_dictionary() -> str:
@@ -80,12 +78,6 @@ class AnkiEudicApp(App[None]):
             with Horizontal():
                 yield Button("Fetch words", variant="primary", id="fetch", disabled=True)
             yield Label("3. Export for Anki", classes="section")
-            yield Select(
-                [("Anki package (.apkg) with dictionary audio", "apkg"), ("Text (.tsv)", "tsv")],
-                value="apkg",
-                allow_blank=False,
-                id="format",
-            )
             yield Input(value=str(Path.cwd() / "eudic-words.apkg"), id="destination")
             yield Input(value="Eudic", placeholder="Anki deck name", id="deck")
             yield Input(
@@ -94,8 +86,7 @@ class AnkiEudicApp(App[None]):
                 id="dictionary",
             )
             yield Static(
-                f"Used for .apkg only; the .mdd next to it supplies audio. Set {DICTIONARY_ENV} "
-                "to change the default.",
+                f"The .mdd next to it supplies audio. Set {DICTIONARY_ENV} to change the default.",
                 id="dictionary-help",
             )
             yield Button("Export", variant="success", id="export", disabled=True)
@@ -130,11 +121,6 @@ class AnkiEudicApp(App[None]):
     def on_select_changed(self, event: Select.Changed) -> None:
         if event.select.id == "category":
             self.query_one("#fetch", Button).disabled = event.value is Select.BLANK
-        elif event.select.id == "format" and event.value in FORMATS:
-            destination = self.query_one("#destination", Input)
-            if destination.value.strip():
-                path = Path(destination.value.strip())
-                destination.value = str(path.with_suffix(FORMATS[str(event.value)]))
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         match event.button.id:
@@ -225,26 +211,10 @@ class AnkiEudicApp(App[None]):
         if not destination:
             self._status("Choose an export filename.", error=True)
             return
-        if self.query_one("#format", Select).value == "tsv":
-            self._export_tsv(destination, deck)
-        else:
-            mdx = self.query_one("#dictionary", Input).value.strip()
-            self.query_one("#export", Button).disabled = True
-            self._status("Exporting…" + (" Looking up words in LDOCE." if mdx else ""))
-            self.export_package(destination, deck, mdx)
-
-    def _export_tsv(self, destination: str, deck: str) -> None:
-        try:
-            count = export_anki(self.words, destination, deck)
-        except OSError as exc:
-            self._status(f"Could not write the export: {exc}", error=True)
-            return
-        path = Path(destination).expanduser()
-        if path.suffix.lower() not in {".tsv", ".txt"}:
-            path = path.with_suffix(".tsv")
-        self._status(
-            f"Exported {count} note(s) to {path}. Import it in Anki as tab-separated text."
-        )
+        mdx = self.query_one("#dictionary", Input).value.strip()
+        self.query_one("#export", Button).disabled = True
+        self._status("Exporting…" + (" Looking up words in LDOCE." if mdx else ""))
+        self.export_package(destination, deck, mdx)
 
     @work(thread=True, exclusive=True, group="export")
     def export_package(self, destination: str, deck: str, mdx: str) -> None:
