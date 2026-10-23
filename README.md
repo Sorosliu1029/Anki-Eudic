@@ -74,6 +74,41 @@ and the chosen deck automatically on Anki versions that support text-file header
 - `r`: reload study lists
 - `q`: quit
 
+## Dictionary lookup (LDOCE5++)
+
+`anki_eudic.dictionary` reads a local *Longman Dictionary of Contemporary English
+5++* MDict dictionary (the `.mdx` entries plus the optional `.mdd` audio/resources).
+It is a library API only; it is not wired into the TUI or the export yet.
+
+```python
+from anki_eudic.dictionary import LdoceDictionary
+
+base = "~/Library/Eudb_en/LDOCE5++ V 1-35"
+with LdoceDictionary(f"{base}.mdx", f"{base}.mdd") as ldoce:
+    entry = ldoce.lookup("pronounce")          # None when the word is missing
+    print(entry.headword, entry.parts_of_speech, entry.pronunciation.ipa_bre)
+    for sense in entry.homographs[0].senses:
+        print(sense.number, sense.grammar, sense.definition)
+        for example in sense.examples:
+            print("  ", example.text, example.audio)
+    ldoce.extract_audio(entry.pronunciation.audio_bre, "media/")  # writes an .mp3
+```
+
+An entry has one `Homograph` per part of speech with IPA (BrE/AmE), audio paths,
+frequency/level markers (`S1`, `W2`, `●●●`, Academic Word List), inflections, senses
+(signposts, grammar codes, register labels, definitions, Chinese translations, examples,
+grammar patterns/collocations, subsenses, cross-references), phrasal verbs, derived
+forms, collocation boxes and usage notes, plus the word family and origin.
+`@@@LINK=` redirects (e.g. `taken` → `take`) are followed and lookups ignore case.
+
+The dictionary files are only read. On first use a key index (a few tens of MB) is
+built in the user cache directory (`~/Library/Caches/anki-eudic` on macOS,
+`$XDG_CACHE_HOME/anki-eudic` on Linux; override with `ANKI_EUDIC_CACHE_DIR`), so
+lookups take milliseconds. Only MDict 2.x files with zlib or uncompressed blocks are
+supported out of the box; LZO-compressed files additionally need `python-lzo`.
+The integration test runs against the real files when they exist (set `LDOCE_DIR`
+if they are not in `~/Library/Eudb_en`).
+
 ## Limitations
 
 - This tool exports study-list content; it does not modify or delete anything in

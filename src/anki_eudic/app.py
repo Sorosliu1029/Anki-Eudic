@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import ClassVar
 
 from textual import work
 from textual.app import App, ComposeResult
@@ -30,7 +31,10 @@ class AnkiEudicApp(App[None]):
     #preview { height: 1fr; min-height: 12; }
     #token-help { color: $text-muted; margin-bottom: 1; }
     """
-    BINDINGS = [("q", "quit", "Quit"), ("r", "refresh", "Refresh lists")]
+    BINDINGS: ClassVar[list[tuple[str, str, str]]] = [
+        ("q", "quit", "Quit"),
+        ("r", "refresh", "Refresh lists"),
+    ]
 
     def __init__(self) -> None:
         super().__init__()
