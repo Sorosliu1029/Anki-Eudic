@@ -24,16 +24,15 @@ including the category and paginated word-list endpoints.
 
 ## Install
 
-Python 3.10 or newer is required. From a clone of this repository:
+Requires [uv](https://docs.astral.sh/uv/) (it provides Python 3.10 or newer). From a
+clone of this repository:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-python -m pip install .
-anki-eudic
+uv run anki-eudic
 ```
 
-For development and tests, use `python -m pip install -e '.[dev]'`.
+`uv run` creates `.venv` and installs the locked dependencies on first use. To install
+the command globally instead, run `uv tool install .`.
 
 ## Token security
 
@@ -48,13 +47,13 @@ It deliberately has **no plaintext fallback**. If the machine has no usable keyr
 provide the token only to the launched process:
 
 ```bash
-EUDIC_TOKEN='NIS your-token' anki-eudic
+EUDIC_TOKEN='NIS your-token' uv run anki-eudic
 ```
 
 Avoid putting that command in shell history; a prompt is safer:
 
 ```bash
-read -rsp 'Eudic token: ' EUDIC_TOKEN && export EUDIC_TOKEN && anki-eudic
+read -rsp 'Eudic token: ' EUDIC_TOKEN && export EUDIC_TOKEN && uv run anki-eudic
 ```
 
 The environment value takes precedence over a saved value. **Forget saved token**
@@ -62,7 +61,7 @@ removes only the credential-store value.
 
 ## Export and import
 
-1. Start `anki-eudic` (or `python -m anki_eudic`).
+1. Start `uv run anki-eudic` (or `uv run python -m anki_eudic`).
 2. Save/provide a token, then load the study lists.
 3. Pick the list where you keep unknown or unfamiliar words and select **Fetch words**.
 4. Review the preview, then choose the destination, deck and LDOCE5++ `.mdx` path,
@@ -134,6 +133,6 @@ if they are not in `~/Library/Eudb_en`).
 ## Tests
 
 ```bash
-pytest
-ruff check .
+uv run pytest
+uv run ruff check .
 ```
