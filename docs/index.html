@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anki Eudic — Eudic word lists as Anki cards</title>
+<meta name="description" content="Transfer the unfamiliar words in your Eudic study lists to an Anki deck, with Longman definitions and pronunciation audio.">
+<link rel="canonical" href="https://anki-eudic.sorosliu.xyz/">
+<meta property="og:title" content="Anki Eudic">
+<meta property="og:description" content="Transfer Eudic's unfamiliar words to Anki, to review, remember and revive.">
+<meta property="og:image" content="https://anki-eudic.sorosliu.xyz/main.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --stock: #e9edf2;
+  --ink: #18202c;
+  --muted: #566173;
+  --card: #ffffff;
+  --rule: #c9d6e6;
+  --lines: #dfe7f1;
+  --blue: #2a6db0;
+  --rose: #b03060;
+  --green: #2e7d55;
+  --shadow: 0 1px 0 #d5dde8, 0 18px 40px -18px rgba(24, 32, 44, .35);
+  --serif: "Literata", "Iowan Old Style", Georgia, serif;
+  --sans: "Figtree", -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --stock: #12161d;
+    --ink: #e3e8ef;
+    --muted: #98a3b4;
+    --card: #1c222c;
+    --rule: #2d3644;
+    --lines: #252d39;
+    --blue: #6fa3de;
+    --rose: #e07a9a;
+    --green: #6cc195;
+    --shadow: 0 1px 0 #0b0e13, 0 18px 40px -18px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--stock);
+  color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--sans);
+}
+a { color: var(--blue); text-underline-offset: .18em; }
+a:focus-visible, button:focus-visible, .flashcard:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+img { max-width: 100%; height: auto; display: block; }
+.wrap { max-width: 72rem; margin: 0 auto; padding-inline: 1.25rem; }
+
+/* Top bar */
+.top { display: flex; justify-content: space-between; align-items: center; padding-block: 1.25rem; }
+.brand { font: 600 1.125rem/1 var(--serif); color: var(--ink); text-decoration: none; }
+.top nav { display: flex; gap: 1.5rem; font-weight: 500; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--ink); }
+
+/* Hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 3.5rem;
+  align-items: center;
+  padding-block: 3.5rem 5rem;
+}
+h1 {
+  font: 600 clamp(2.4rem, 5vw, 3.6rem)/1.08 var(--serif);
+  letter-spacing: -.015em;
+  margin: 0 0 1.25rem;
+  max-width: 14ch;
+}
+.lede { font-size: 1.2rem; color: var(--muted); max-width: 34rem; margin: 0 0 2rem; }
+.install { display: flex; align-items: stretch; max-width: 30rem; }
+.install code {
+  flex: 1;
+  font: 500 .98rem/1 var(--mono);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  padding: 1rem 1.1rem;
+  white-space: nowrap;
+  overflow-x: auto;
+  min-width: 0;
+}
+.install code::before { content: "$ "; color: var(--muted); }
+.install button {
+  font: 600 .95rem/1 var(--sans);
+  color: #fff;
+  background: var(--blue);
+  border: 0;
+  border-radius: 0 8px 8px 0;
+  padding: 0 1.2rem;
+  cursor: pointer;
+  min-width: 5.5rem;
+}
+@media (prefers-color-scheme: dark) { .install button { color: #0e1622; } }
+.install-note { font-size: .92rem; color: var(--muted); margin: .75rem 0 0; }
+
+/* The flashcard: a replica of an exported note */
+.stage { perspective: 1600px; }
+.flashcard {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 25rem;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.3, .7, .2, 1);
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.face {
+  grid-area: 1 / 1;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 2.25rem 2.25rem 2rem;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-top: 4px solid var(--rose);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 2.05rem, var(--lines) 2.05rem calc(2.05rem + 1px));
+  background-position: 0 4.6rem;
+  background-repeat: no-repeat;
+  background-size: 100% calc(100% - 5.5rem);
+}
+.back { transform: rotateY(180deg); background-image: none; }
+.front { display: flex; flex-direction: column; justify-content: center; }
+.word { font: 600 2.6rem/1.15 var(--serif); text-align: center; margin: 0; }
+.phonetic { text-align: center; color: var(--muted); margin: .7rem 0 0; font-family: var(--serif); }
+.pron { white-space: nowrap; margin: 0 .55em; }
+.accent { font: 600 .72em var(--sans); color: var(--blue); margin-right: .25em; }
+.speaker { color: var(--blue); font-size: .9em; }
+.hint {
+  position: absolute; left: 0; right: 0; bottom: 1.1rem;
+  text-align: center; font-size: .88rem; color: var(--muted);
+}
+.back .word { font-size: 1.7rem; }
+.back .phonetic { font-size: .95rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--rule); }
+.senses { font-family: var(--serif); font-size: 1.02rem; line-height: 1.55; margin: 0; padding: 0; list-style: none; }
+.senses li { margin-bottom: .8rem; }
+.num { font-weight: 600; margin-right: .3em; }
+.pos { font-style: italic; color: var(--rose); font-weight: 600; margin-bottom: .5rem; font-family: var(--serif); }
+.signpost {
+  background: var(--blue); color: #fff; font: 600 .68rem/1 var(--sans);
+  padding: .18em .35em; border-radius: 3px; text-transform: uppercase; vertical-align: .15em;
+}
+@media (prefers-color-scheme: dark) { .signpost { color: #0e1622; } }
+.gram { color: var(--green); }
+.reveal .en { text-decoration: underline dotted var(--muted); text-underline-offset: .2em; }
+.reveal .tran { color: var(--muted); display: none; }
+.reveal.shown .tran { display: inline; }
+.example { color: var(--muted); font-style: italic; display: block; margin-top: .15rem; }
+.context { border-top: 1px solid var(--rule); margin-top: 1rem; padding-top: .7rem; font-style: italic; font-family: var(--serif); font-size: .95rem; }
+.caption { font-size: .92rem; color: var(--muted); margin: 1rem 0 0; text-align: center; }
+
+/* Steps */
+section { padding-block: 4.5rem; }
+h2 { font: 600 clamp(1.7rem, 3vw, 2.2rem)/1.2 var(--serif); margin: 0 0 .75rem; letter-spacing: -.01em; }
+.section-lede { color: var(--muted); max-width: 40rem; margin: 0 0 2.5rem; }
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: 3rem; }
+.step { counter-increment: step; display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+.step h3 { font: 600 1.25rem/1.3 var(--serif); margin: 0 0 .5rem; }
+.step h3::before {
+  content: counter(step);
+  display: inline-grid; place-items: center;
+  width: 1.8rem; height: 1.8rem; margin-right: .6rem;
+  border-radius: 50%; border: 1.5px solid var(--rose); color: var(--rose);
+  font: 600 .95rem/1 var(--sans); vertical-align: .1em;
+}
+.step p { margin: 0; color: var(--muted); }
+.step kbd {
+  font: 500 .85em/1 var(--mono); padding: .15em .4em; border-radius: 4px;
+  border: 1px solid var(--rule); background: var(--card); color: var(--ink);
+}
+.shot { margin: 0; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); background: #1e1e1e; }
+.shot.narrow { max-width: 40rem; }
+
+/* Features */
+.features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 3.5rem; margin: 0; }
+.features dt { font: 600 1.1rem/1.35 var(--serif); margin-bottom: .35rem; }
+.features dd { margin: 0; color: var(--muted); max-width: 32rem; }
+
+/* Get started */
+.start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3.5rem; }
+pre {
+  margin: 0; background: var(--card); border: 1px solid var(--rule); border-radius: 8px;
+  padding: 1.1rem 1.2rem; overflow-x: auto; font: 400 .92rem/1.7 var(--mono);
+}
+pre .c { color: var(--muted); }
+.start p { color: var(--muted); max-width: 34rem; }
+
+footer { border-top: 1px solid var(--rule); padding-block: 2rem 2.5rem; color: var(--muted); font-size: .92rem; }
+footer .links { display: inline-flex; gap: 1.25rem; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: .5rem 2rem; justify-content: space-between; }
+
+@media (max-width: 860px) {
+  .hero, .start { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+  .hero { padding-block: 2rem 3.5rem; }
+  .step { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .features { grid-template-columns: minmax(0, 1fr); }
+  .face { padding: 1.75rem 1.4rem 1.6rem; }
+  .flashcard { min-height: 23rem; }
+}
+@media (max-width: 420px) {
+  .top nav { gap: 1rem; }
+  .word { font-size: 2.1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flashcard { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="./">Anki Eudic</a>
+  <nav aria-label="Project links">
+    <a href="https://github.com/Sorosliu1029/Anki-Eudic">GitHub</a>
+    <a href="https://pypi.org/project/anki-eudic/">PyPI</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Your Eudic word list, ready to review in Anki.</h1>
+      <p class="lede">Anki Eudic takes the unfamiliar words you saved in Eudic and turns
+        them into an Anki deck, with Longman definitions, examples and British and
+        American pronunciation.</p>
+      <div class="install">
+        <code id="install-cmd">uv tool install anki-eudic</code>
+        <button type="button" id="copy" aria-describedby="install-cmd">Copy</button>
+      </div>
+      <p class="install-note">Then run <code>anki-eudic</code> in your terminal.
+        Needs Python 3.10 or newer.</p>
+    </div>
+
+    <div>
+      <div class="stage">
+        <div class="flashcard" id="card" role="button" tabindex="0"
+             aria-pressed="false" aria-label="Sample flashcard for “indefinitely”. Press to flip.">
+          <div class="face front">
+            <p class="word">indefinitely</p>
+            <p class="phonetic">
+              <span class="pron"><span class="accent">BrE</span>/ɪnˈdefɪnətli/ <span class="speaker" aria-hidden="true">▶</span></span>
+              <span class="pron"><span class="accent">AmE</span>/ɪnˈdefənətli/ <span class="speaker" aria-hidden="true">▶</span></span>
+            </p>
+            <span class="hint">Click to show the answer</span>
+          </div>
+          <div class="face back" aria-hidden="true">
+            <p class="word">indefinitely</p>
+            <p class="phonetic">
+              <span class="pron"><span class="accent">BrE</span>/ɪnˈdefɪnətli/</span>
+              <span class="pron"><span class="accent">AmE</span>/ɪnˈdefənətli/</span>
+            </p>
+            <div class="pos">adverb</div>
+            <ol class="senses">
+              <li><span class="num">1</span><span class="signpost">time</span>
+                <span class="reveal"><span class="en">for a period of time without a fixed end</span>
+                <span class="tran">无限期地</span></span>
+                <span class="example">The meeting has been postponed indefinitely.</span></li>
+              <li><span class="num">2</span><span class="gram">[+ adj]</span>
+                <span class="reveal"><span class="en">in a way that is not clear or exact</span>
+                <span class="tran">不明确地，含糊地</span></span></li>
+            </ol>
+            <div class="context">“The project is on hold indefinitely.”</div>
+          </div>
+        </div>
+      </div>
+      <p class="caption" id="caption">A note as it appears in Anki. Flip it, then click a definition to reveal the Chinese.</p>
+    </div>
+  </div>
+
+  <section id="how" class="wrap">
+    <h2>From word list to deck</h2>
+    <p class="section-lede">Everything happens in one keyboard-driven terminal window.
+      There’s no Anki add-on to install, and Anki doesn’t need to be running.</p>
+    <ol class="steps">
+      <li class="step">
+        <div>
+          <h3>Connect to Eudic</h3>
+          <p>Paste the token from Eudic’s Open API page. It’s checked with Eudic first,
+            then kept in your system keychain. It never goes into a file.</p>
+        </div>
+        <figure class="shot narrow">
+          <img src="token.png" width="1426" height="874" loading="lazy"
+               alt="The Connect to Eudic dialog with a masked token field and Save & connect button.">
+        </figure>
+      </li>
+      <li class="step">
+        <div>
+          <h3>Pick a study list</h3>
+          <p>Your lists are in the sidebar. Open one to see every word with its phonetic
+            and Eudic explanation. Press <kbd>/</kbd> to filter.</p>
+        </div>
+        <figure class="shot">
+          <img src="main.png" width="3840" height="2052" loading="lazy"
+               alt="The main screen: study lists on the left, a table of 3553 words with phonetics and explanations, and a detail pane.">
+        </figure>
+      </li>
+      <li class="step">
+        <div>
+          <h3>Export and import</h3>
+          <p>Press <kbd>e</kbd>, choose a deck name and file, and export. Then open the
+            <code>.apkg</code> in Anki with File → Import.</p>
+        </div>
+        <figure class="shot narrow">
+          <img src="export.png" width="1426" height="1032" loading="lazy"
+               alt="The export dialog showing deck name, output file, LDOCE5++ dictionary path and a progress bar.">
+        </figure>
+      </li>
+    </ol>
+  </section>
+
+  <section id="features" class="wrap">
+    <h2>What you get</h2>
+    <p class="section-lede">Cards built to help you remember the word, not just its translation.</p>
+    <dl class="features">
+      <div>
+        <dt>Longman content and audio</dt>
+        <dd>With a local LDOCE5++ dictionary, each card gets numbered senses, examples,
+          collocations, word origin, and British and American recordings.</dd>
+      </div>
+      <div>
+        <dt>English first, Chinese on demand</dt>
+        <dd>Definitions are shown in English. Click one to reveal the Chinese
+          translation when you need it.</dd>
+      </div>
+      <div>
+        <dt>Re-export without losing progress</dt>
+        <dd>Export the same list again after adding words. Existing cards update in
+          place and keep their review history; new words are added.</dd>
+      </div>
+      <div>
+        <dt>Your context, kept</dt>
+        <dd>The sentence you saved the word from, the date you added it and its star
+          rating in Eudic all come along to the card.</dd>
+      </div>
+      <div>
+        <dt>Works with any list size</dt>
+        <dd>Every page of the list is downloaded and duplicates are removed, whether it
+          holds twenty words or several thousand.</dd>
+      </div>
+      <div>
+        <dt>Token stays private</dt>
+        <dd>Stored only in macOS Keychain, Windows Credential Locker or Secret Service.
+          You can also use it for one session without saving it.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="start" class="wrap start">
+    <div>
+      <h2>Get started</h2>
+      <p>Install from PyPI with <a href="https://docs.astral.sh/uv/">uv</a> or pipx, then
+        launch it. You’ll be asked for your Eudic token the first time.</p>
+      <p>For Longman content, point the export dialog at your LDOCE5++ <code>.mdx</code>
+        file. On macOS it’s found automatically in Eudic’s dictionary folder.</p>
+    </div>
+    <pre><span class="c"># install</span>
+uv tool install anki-eudic
+<span class="c"># or</span>
+pipx install anki-eudic
+
+<span class="c"># run</span>
+anki-eudic</pre>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Anki Eudic is open source under the MIT licence.</span>
+    <span class="links"><a href="https://github.com/Sorosliu1029/Anki-Eudic">Source on GitHub</a>
+      <a href="https://github.com/Sorosliu1029/Anki-Eudic/issues">Report an issue</a></span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const card = document.getElementById("card");
+  const faces = card.querySelectorAll(".face");
+  const flip = () => {
+    const flipped = card.classList.toggle("flipped");
+    card.setAttribute("aria-pressed", String(flipped));
+    faces[0].setAttribute("aria-hidden", String(flipped));
+    faces[1].setAttribute("aria-hidden", String(!flipped));
+  };
+  card.addEventListener("click", (event) => {
+    const reveal = event.target.closest(".reveal");
+    if (reveal && card.classList.contains("flipped")) {
+      reveal.classList.toggle("shown");
+      return;
+    }
+    flip();
+  });
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      flip();
+    }
+  });
+
+  const button = document.getElementById("copy");
+  button.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(document.getElementById("install-cmd").textContent);
+      button.textContent = "Copied";
+    } catch {
+      button.textContent = "Select it";
+    }
+    setTimeout(() => { button.textContent = "Copy"; }, 1800);
+  });
+})();
+</script>
+</body>
+</html>
