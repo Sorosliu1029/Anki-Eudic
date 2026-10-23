@@ -2,7 +2,7 @@
 
 Re-exporting the same study list updates notes in place: the note type ID is fixed,
 each note's GUID derives from its word only, and Anki matches decks by name. See
-``docs/anki-development.md`` for the import rules this relies on.
+``spec/anki-development.md`` for the import rules this relies on.
 """
 
 from __future__ import annotations

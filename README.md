@@ -1,104 +1,136 @@
 # Anki Eudic
 
-A small Python/Textual application that downloads an **unknown or unfamiliar word
-list** from Eudic and exports it as an Anki deck (`.apkg`), optionally enriched with
-definitions, examples and pronunciation audio from a local LDOCE5++ dictionary. The API
-implementation follows the Eudic development guide included in this repository,
-including the category and paginated word-list endpoints.
+🔠 Transfer Eudic's unfamiliar words to Anki, to review, remember and revive.
+
+[![PyPI](https://img.shields.io/pypi/v/anki-eudic)](https://pypi.org/project/anki-eudic/)
+[![Python](https://img.shields.io/pypi/pyversions/anki-eudic)](https://pypi.org/project/anki-eudic/)
+
+Anki Eudic is a terminal app that downloads a study list from
+[Eudic](https://www.eudic.net/) and exports it as an Anki deck (`.apkg`). With a local
+*Longman Dictionary of Contemporary English* (LDOCE5++), each card also gets English
+definitions with Chinese translations, examples, and British and American
+pronunciation audio.
+
+**Website:** [anki-eudic.sorosliu.xyz](https://anki-eudic.sorosliu.xyz)
+
+![The Anki Eudic main screen: study lists, word preview and detail pane](https://raw.githubusercontent.com/Sorosliu1029/Anki-Eudic/master/docs/main.png)
 
 ## Features
 
-- Keyboard-driven terminal UI: study lists in a sidebar, a filterable word preview
-  with a detail pane, and an export dialog with a progress bar.
-- Fetches every API page (up to Eudic's documented maximum page size of 100) and
-  removes case-insensitive duplicates.
-- Exports an Anki package (`.apkg`) with BrE/AmE IPA and audio, part of speech,
-  numbered senses with Chinese translations and examples, collocations and word origin
-  from LDOCE5++, plus Eudic's context, added date and star rating. Eudic's own
-  explanation is used only for words the dictionary does not have.
-- Re-exporting the same list updates existing notes in place and keeps review progress.
-- No Anki add-on or running Anki instance is required.
-- Keeps the authorization token out of the repository and export. Persisted tokens
-  are stored by `keyring` in the operating system's credential service—not in a
-  plaintext settings file.
+- **Keyboard-driven TUI.** Study lists in a sidebar, a filterable word preview with a
+  detail pane, and an export dialog with a progress bar.
+- **Rich cards.** BrE/AmE IPA and audio, part of speech, numbered senses with examples,
+  collocations and word origin from LDOCE5++. Click a definition to reveal its Chinese
+  translation. Eudic's own explanation is used when the dictionary lacks a word.
+- **Your context kept.** The sentence you saved the word from, its added date and star
+  rating come along to the card.
+- **Safe re-exports.** Notes are identified by word, so exporting the same list again
+  updates existing cards in place and keeps their review progress.
+- **Complete lists.** Every API page is fetched and case-insensitive duplicates are
+  removed.
+- **No Anki add-on.** Anki doesn't need to be running; import the `.apkg` file.
+- **Private token.** Stored only in the OS credential store (macOS Keychain, Windows
+  Credential Locker, Secret Service), never in a plaintext file.
 
 ## Install
 
-Requires [uv](https://docs.astral.sh/uv/) (it provides Python 3.10 or newer). From a
-clone of this repository:
+Install from [PyPI](https://pypi.org/project/anki-eudic/) (Python 3.10 or newer):
 
 ```bash
-uv run anki-eudic
+uv tool install anki-eudic
+# or
+pipx install anki-eudic
 ```
 
-`uv run` creates `.venv` and installs the locked dependencies on first use. To install
-the command globally instead, run `uv tool install .`.
-
-## Token security
-
-Create or copy your authorization token from Eudic's Open API page. On first run,
-the **Connect to Eudic** dialog opens; paste it and press Enter (**Save & connect**).
-The token is checked against Eudic before it is saved. **Use without saving** keeps it
-for the current session only. Either `abc...` or the
-full `NIS abc...` authorization value is accepted. The field is masked and cleared
-after saving.
-
-The app delegates persistence to the system credential store through `keyring`
-(for example, macOS Keychain, Windows Credential Locker, or a Linux Secret Service).
-It deliberately has **no plaintext fallback**. If the machine has no usable keyring,
-provide the token only to the launched process:
+Then run:
 
 ```bash
-EUDIC_TOKEN='NIS your-token' uv run anki-eudic
+anki-eudic
 ```
 
-Avoid putting that command in shell history; a prompt is safer:
+## Usage
+
+1. **Connect.** On first run, paste the authorization token from Eudic's Open API page
+   ([my.eudic.net](https://my.eudic.net/)) and press Enter. The token is checked with
+   Eudic before it is saved. **Use without saving** keeps it for this session only.
+2. **Pick a list.** Select a study list in the sidebar to load its words. Press `/` to
+   filter and Escape to clear the filter.
+3. **Export.** Press `e`, choose the deck name, output file and LDOCE5++ `.mdx` path,
+   and export. The dialog tells you whether the dictionary will add definitions and
+   audio.
+4. **Import.** In Anki Desktop choose **File → Import** and select the `.apkg`.
+
+| Key | Action |
+| --- | --- |
+| `e` | Export the open list |
+| `/` | Filter words |
+| `r` | Reload study lists |
+| `t` | Change or forget the token |
+| `q` | Quit |
+
+### Token
+
+Either `abc...` or the full `NIS abc...` value is accepted. There is deliberately no
+plaintext fallback: if the machine has no usable keyring, pass the token to the process
+instead, preferably without putting it in your shell history:
 
 ```bash
-read -rsp 'Eudic token: ' EUDIC_TOKEN && export EUDIC_TOKEN && uv run anki-eudic
+read -rsp 'Eudic token: ' EUDIC_TOKEN && export EUDIC_TOKEN && anki-eudic
 ```
 
-The environment value takes precedence over a saved value. Press `t` to reopen the
-dialog; **Forget saved token** there removes only the credential-store value.
+`EUDIC_TOKEN` takes precedence over a saved token.
 
-## Export and import
+### Dictionary
 
-1. Start `uv run anki-eudic` (or `uv run python -m anki_eudic`).
-2. Connect with your token; the study lists appear in the sidebar.
-3. Select the list where you keep unknown or unfamiliar words (Enter or click). Its
-   words load into the preview; the pane below the table shows the highlighted word in
-   full. Press `/` to filter, Escape to clear the filter.
-4. Press `e` to export. Choose the deck, output file and LDOCE5++ `.mdx` path; the
-   dialog says whether the dictionary will add definitions and audio. The dictionary
-   path defaults to `$ANKI_EUDIC_LDOCE` or an `LDOCE5*.mdx` in `~/Library/Eudb_en`;
-   leave it empty to export Eudic's data only. Audio comes from the `.mdd` file next
-   to the `.mdx`.
-5. In Anki Desktop, choose **File → Import** and select the output file.
+The LDOCE5++ path defaults to `$ANKI_EUDIC_LDOCE`, or an `LDOCE5*.mdx` in
+`~/Library/Eudb_en` (Eudic's dictionary folder on macOS). Audio comes from the `.mdd`
+file next to the `.mdx`. Leave the path empty to export Eudic's data only.
 
-Shortcuts: `q` quit · `r` reload study lists · `e` export · `/` filter · `t` token.
+The dictionary files are only read. On first use a key index is built in the user cache
+directory (`~/Library/Caches/anki-eudic` on macOS, `$XDG_CACHE_HOME/anki-eudic` on
+Linux; override with `ANKI_EUDIC_CACHE_DIR`). MDict 2.x files with zlib or uncompressed
+blocks are supported; LZO-compressed files also need `python-lzo`.
+
+### Cards
 
 Notes use the **Anki-Eudic Word** note type (fields: Word, PhoneticUK, PhoneticUS,
 AudioUK, AudioUS, PartOfSpeech, Definition, Explanation, Context, Extra, Added, Star).
-The front shows the word with British and American IPA and audio; the back adds the
-definitions and the rest. Each note is
-identified by its lower-cased word, so exporting the list again later and importing
-with the default **Update notes: if newer** updates existing cards without resetting
-their progress, and adds new words. Words removed from Eudic are not deleted in Anki.
-Audio files are named `ldoce_<accent>_<name>.mp3` in Anki's media folder. Sync to
-AnkiWeb from Anki as usual. See [docs/anki-development.md](docs/anki-development.md)
-for the details.
+The front shows the word with its pronunciations; the back adds everything else.
+Re-import with Anki's default **Update notes: if newer** to update cards without
+resetting progress. Words removed from Eudic are not deleted in Anki. See
+[spec/anki-development.md](spec/anki-development.md) for details.
 
+## Development
 
-## Keyboard shortcuts
+Requires [uv](https://docs.astral.sh/uv/).
 
-- `r`: reload study lists
-- `q`: quit
+```bash
+git clone https://github.com/Sorosliu1029/Anki-Eudic.git
+cd Anki-Eudic
+uv run anki-eudic      # creates .venv with the locked dependencies and runs the app
+uv run pytest          # tests, including Textual pilot tests of the TUI
+uv run ruff check .
+uv run ruff format .
+```
 
-## Dictionary lookup (LDOCE5++)
+Layout:
 
-`anki_eudic.dictionary` reads a local *Longman Dictionary of Contemporary English
-5++* MDict dictionary (the `.mdx` entries plus the optional `.mdd` audio/resources).
-The `.apkg` export uses it; it can also be used directly as a library.
+| Path | Contents |
+| --- | --- |
+| `src/anki_eudic/app.py` | Main TUI screen |
+| `src/anki_eudic/screens.py` | Token and export dialogs |
+| `src/anki_eudic/client.py` | Eudic Open API client |
+| `src/anki_eudic/auth.py` | Token storage via `keyring` |
+| `src/anki_eudic/apkg.py` | Anki package export |
+| `src/anki_eudic/dictionary.py`, `mdict.py` | LDOCE5++ MDict reader and parser |
+| `spec/` | Design specs and Anki import notes |
+| `docs/` | Product page, served by GitHub Pages |
+
+The API implementation follows the Eudic development guide in
+`eudic-develop-guide.html`. The LDOCE5++ test runs against real dictionary files when
+they exist (set `LDOCE_DIR` if they are not in `~/Library/Eudb_en`).
+
+`anki_eudic.dictionary` can also be used as a library:
 
 ```python
 from anki_eudic.dictionary import LdoceDictionary
@@ -109,37 +141,13 @@ with LdoceDictionary(f"{base}.mdx", f"{base}.mdd") as ldoce:
     print(entry.headword, entry.parts_of_speech, entry.pronunciation.ipa_bre)
     for sense in entry.homographs[0].senses:
         print(sense.number, sense.grammar, sense.definition)
-        for example in sense.examples:
-            print("  ", example.text, example.audio)
-    ldoce.extract_audio(entry.pronunciation.audio_bre, "media/")  # writes an .mp3
 ```
-
-An entry has one `Homograph` per part of speech with IPA (BrE/AmE), audio paths,
-frequency/level markers (`S1`, `W2`, `●●●`, Academic Word List), inflections, senses
-(signposts, grammar codes, register labels, definitions, Chinese translations, examples,
-grammar patterns/collocations, subsenses, cross-references), phrasal verbs, derived
-forms, collocation boxes and usage notes, plus the word family and origin.
-`@@@LINK=` redirects (e.g. `taken` → `take`) are followed and lookups ignore case.
-
-The dictionary files are only read. On first use a key index (a few tens of MB) is
-built in the user cache directory (`~/Library/Caches/anki-eudic` on macOS,
-`$XDG_CACHE_HOME/anki-eudic` on Linux; override with `ANKI_EUDIC_CACHE_DIR`), so
-lookups take milliseconds. Only MDict 2.x files with zlib or uncompressed blocks are
-supported out of the box; LZO-compressed files additionally need `python-lzo`.
-The integration test runs against the real files when they exist (set `LDOCE_DIR`
-if they are not in `~/Library/Eudb_en`).
 
 ## Limitations
 
-- This tool exports study-list content; it does not modify or delete anything in
-  Eudic and does not invoke AnkiConnect.
-- Availability and unlocking behavior of the credential store depend on the OS.
-- Network/API errors are shown in the status panel. Tokens are never included in
-  those messages.
+- Exports only; nothing in Eudic is modified, and AnkiConnect is not used.
+- Credential store availability and unlocking behaviour depend on the OS.
 
-## Tests
+## License
 
-```bash
-uv run pytest
-uv run ruff check .
-```
+[MIT](LICENSE)
