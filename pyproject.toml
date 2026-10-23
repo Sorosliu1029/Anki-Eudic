@@ -28,6 +28,9 @@ dev = ["anki>=26.9", "pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
 [project.scripts]
 anki-eudic = "anki_eudic.app:main"
 
+[tool.hatch.build.targets.sdist]
+exclude = ["docs/*.png"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/anki_eudic"]
 
