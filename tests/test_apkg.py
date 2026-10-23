@@ -141,6 +141,13 @@ def test_export_without_dictionary_uses_eudic_fields(tmp_path: Path) -> None:
     assert [field["name"] for field in models[str(MODEL_ID)]["flds"]] == list(FIELDS)
 
 
+def test_export_reports_progress_per_note(tmp_path: Path) -> None:
+    seen: list[int] = []
+    export_apkg([Word("one"), Word("two"), Word("three")], tmp_path / "x", progress=seen.append)
+
+    assert seen == [1, 2, 3]
+
+
 def test_export_with_dictionary_bundles_audio(tmp_path: Path) -> None:
     dictionary = FakeDictionary({"zorble": ZORBLE}, {BRE: b"uk-mp3", AME: b"us-mp3"})
 

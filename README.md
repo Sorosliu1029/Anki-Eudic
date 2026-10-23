@@ -8,8 +8,8 @@ including the category and paginated word-list endpoints.
 
 ## Features
 
-- Terminal UI for saving a token, choosing a Eudic study list, previewing its words,
-  and choosing the Anki export location and deck name.
+- Keyboard-driven terminal UI: study lists in a sidebar, a filterable word preview
+  with a detail pane, and an export dialog with a progress bar.
 - Fetches every API page (up to Eudic's documented maximum page size of 100) and
   removes case-insensitive duplicates.
 - Exports an Anki package (`.apkg`) with BrE/AmE IPA and audio, part of speech,
@@ -37,7 +37,9 @@ the command globally instead, run `uv tool install .`.
 ## Token security
 
 Create or copy your authorization token from Eudic's Open API page. On first run,
-paste it into the password field and select **Save token**. Either `abc...` or the
+the **Connect to Eudic** dialog opens; paste it and press Enter (**Save & connect**).
+The token is checked against Eudic before it is saved. **Use without saving** keeps it
+for the current session only. Either `abc...` or the
 full `NIS abc...` authorization value is accepted. The field is masked and cleared
 after saving.
 
@@ -56,19 +58,24 @@ Avoid putting that command in shell history; a prompt is safer:
 read -rsp 'Eudic token: ' EUDIC_TOKEN && export EUDIC_TOKEN && uv run anki-eudic
 ```
 
-The environment value takes precedence over a saved value. **Forget saved token**
-removes only the credential-store value.
+The environment value takes precedence over a saved value. Press `t` to reopen the
+dialog; **Forget saved token** there removes only the credential-store value.
 
 ## Export and import
 
 1. Start `uv run anki-eudic` (or `uv run python -m anki_eudic`).
-2. Save/provide a token, then load the study lists.
-3. Pick the list where you keep unknown or unfamiliar words and select **Fetch words**.
-4. Review the preview, then choose the destination, deck and LDOCE5++ `.mdx` path,
-   and export. The dictionary path defaults to
-   `$ANKI_EUDIC_LDOCE` or an `LDOCE5*.mdx` in `~/Library/Eudb_en`; leave it empty to
-   export Eudic's data only. Audio comes from the `.mdd` file next to the `.mdx`.
+2. Connect with your token; the study lists appear in the sidebar.
+3. Select the list where you keep unknown or unfamiliar words (Enter or click). Its
+   words load into the preview; the pane below the table shows the highlighted word in
+   full. Press `/` to filter, Escape to clear the filter.
+4. Press `e` to export. Choose the deck, output file and LDOCE5++ `.mdx` path; the
+   dialog says whether the dictionary will add definitions and audio. The dictionary
+   path defaults to `$ANKI_EUDIC_LDOCE` or an `LDOCE5*.mdx` in `~/Library/Eudb_en`;
+   leave it empty to export Eudic's data only. Audio comes from the `.mdd` file next
+   to the `.mdx`.
 5. In Anki Desktop, choose **File → Import** and select the output file.
+
+Shortcuts: `q` quit · `r` reload study lists · `e` export · `/` filter · `t` token.
 
 Notes use the **Anki-Eudic Word** note type (fields: Word, PhoneticUK, PhoneticUS,
 AudioUK, AudioUS, PartOfSpeech, Definition, Explanation, Context, Extra, Added, Star).
