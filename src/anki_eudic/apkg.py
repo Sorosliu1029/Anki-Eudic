@@ -56,7 +56,9 @@ _FRONT = """\
 _BACK = """\
 {{FrontSide}}
 <hr id="answer">
-{{#Definition}}<div class="definition">{{Definition}}</div>{{/Definition}}
+{{#Definition}}<div class="definition" \
+onclick="var p = event.target.closest('.reveal'); if (p) p.classList.toggle('shown');">\
+{{Definition}}</div>{{/Definition}}
 {{#Explanation}}<div class="explanation">{{Explanation}}</div>{{/Explanation}}
 {{#Context}}<div class="context">{{Context}}</div>{{/Context}}
 {{#Extra}}<div class="extra">{{Extra}}</div>{{/Extra}}
@@ -74,6 +76,9 @@ _CSS = """\
 .gram { color: #2e8b57; }
 .labels { color: #8a6d00; font-style: italic; }
 .tran { color: #777; }
+.reveal > .tran { display: none; }
+.reveal.shown > .tran { display: inline; }
+.reveal > .en { cursor: pointer; text-decoration: underline dotted #bbb; }
 .examples { color: #444; font-style: italic; }
 .explanation, .context, .extra { border-top: 1px solid #ddd; margin-top: .8em;
   padding-top: .5em; }
@@ -151,6 +156,16 @@ def _grammar(code: str) -> str:
     return f"[{code}]" if code and not code.startswith("[") else code
 
 
+def _reveal(css: str, english: str, translation: str) -> str:
+    """Pair English with its translation, which the card shows only after a click."""
+    if not english or not translation:
+        return _span(css, english) or _span("tran", translation)
+    return (
+        f'<span class="reveal"><span class="{css} en">{_text(english)}</span> '
+        f"{_span('tran', translation)}</span>"
+    )
+
+
 def _render_sense(sense: Sense) -> str:
     definition = sense.definition or "; ".join(ref.text for ref in sense.cross_references)
     parts = [
@@ -158,15 +173,11 @@ def _render_sense(sense: Sense) -> str:
         f"<b>{_text(sense.lexical_unit)}</b>" if sense.lexical_unit else "",
         _span("gram", _grammar(sense.grammar)),
         _span("labels", ", ".join(sense.labels)),
-        _span("def", definition),
-        _span("tran", sense.translation),
+        _reveal("def", definition, sense.translation),
     ]
     body = " ".join(part for part in parts if part)
     examples = [
-        "<li>"
-        + _text(ex.text)
-        + (" " + _span("tran", ex.translation) if ex.translation else "")
-        + "</li>"
+        f"<li>{_reveal('example', ex.text, ex.translation)}</li>"
         for ex in sense.examples[:MAX_EXAMPLES]
     ]
     if examples:

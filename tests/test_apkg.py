@@ -43,7 +43,7 @@ ZORBLE = DictionaryEntry(
                     definition="to roll <downhill> in a ball",
                     translation="滚下山",
                     examples=(
-                        Example("We zorbled all afternoon.", audio="media/x.mp3"),
+                        Example("We zorbled all afternoon.", "我们滚了一下午。", "media/x.mp3"),
                         Example("Second example."),
                         Example("Third example is dropped."),
                     ),
@@ -106,9 +106,15 @@ def test_render_entry_escapes_and_limits_examples() -> None:
     assert fields["PartOfSpeech"] == "verb"
     definition = fields["Definition"]
     assert "to roll &lt;downhill&gt; in a ball" in definition
-    assert "滚下山" in definition and "MOVE" in definition
+    assert "MOVE" in definition
+    assert (
+        '<span class="reveal"><span class="def en">to roll &lt;downhill&gt; in a ball</span> '
+        '<span class="tran">滚下山</span></span>'
+    ) in definition
     assert "Second example." in definition
     assert "Third example" not in definition
+    assert '<span class="example en">We zorbled all afternoon.</span>' in definition
+    assert '<li><span class="example">Second example.</span></li>' in definition
     assert "a subsense" in definition
     assert definition.count("[intransitive]") == 1
     assert "invented" in fields["Extra"]
