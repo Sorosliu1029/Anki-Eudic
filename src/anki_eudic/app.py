@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import ClassVar
 
@@ -10,10 +11,22 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, VerticalScroll
 from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Select, Static
 
+from .apkg import export_apkg
 from .auth import CredentialError, delete_token, load_token, normalize_token, save_token
 from .client import EudicClient, EudicError
-from .exporter import export_anki
+from .dictionary import LdoceDictionary
+from .mdict import MdictError
 from .models import Category, Word
+
+DICTIONARY_ENV = "ANKI_EUDIC_LDOCE"
+
+
+def default_dictionary() -> str:
+    """Return ``$ANKI_EUDIC_LDOCE`` or an LDOCE5++ ``.mdx`` in Eudic's macOS library, if any."""
+    if configured := os.environ.get(DICTIONARY_ENV):
+        return configured
+    found = sorted((Path.home() / "Library" / "Eudb_en").glob("LDOCE5*.mdx"))
+    return str(found[0]) if found else ""
 
 
 class AnkiEudicApp(App[None]):
@@ -29,7 +42,7 @@ class AnkiEudicApp(App[None]):
     Button { margin-right: 1; }
     #status { margin: 1 0; padding: 1; background: $surface; min-height: 3; }
     #preview { height: 1fr; min-height: 12; }
-    #token-help { color: $text-muted; margin-bottom: 1; }
+    #token-help, #dictionary-help { color: $text-muted; margin-bottom: 1; }
     """
     BINDINGS: ClassVar[list[tuple[str, str, str]]] = [
         ("q", "quit", "Quit"),
@@ -65,9 +78,18 @@ class AnkiEudicApp(App[None]):
             with Horizontal():
                 yield Button("Fetch words", variant="primary", id="fetch", disabled=True)
             yield Label("3. Export for Anki", classes="section")
-            yield Input(value=str(Path.cwd() / "eudic-words.tsv"), id="destination")
+            yield Input(value=str(Path.cwd() / "eudic-words.apkg"), id="destination")
             yield Input(value="Eudic", placeholder="Anki deck name", id="deck")
-            yield Button("Export TSV", variant="success", id="export", disabled=True)
+            yield Input(
+                value=default_dictionary(),
+                placeholder="Optional LDOCE5++ .mdx path (adds definitions and audio)",
+                id="dictionary",
+            )
+            yield Static(
+                f"The .mdd next to it supplies audio. Set {DICTIONARY_ENV} to change the default.",
+                id="dictionary-help",
+            )
+            yield Button("Export", variant="success", id="export", disabled=True)
             yield Static("Ready. Add a token to begin.", id="status")
             yield DataTable(id="preview", zebra_stripes=True)
         yield Footer()
@@ -189,17 +211,44 @@ class AnkiEudicApp(App[None]):
         if not destination:
             self._status("Choose an export filename.", error=True)
             return
+        mdx = self.query_one("#dictionary", Input).value.strip()
+        self.query_one("#export", Button).disabled = True
+        self._status("Exporting…" + (" Looking up words in LDOCE." if mdx else ""))
+        self.export_package(destination, deck, mdx)
+
+    @work(thread=True, exclusive=True, group="export")
+    def export_package(self, destination: str, deck: str, mdx: str) -> None:
         try:
-            count = export_anki(self.words, destination, deck)
-        except OSError as exc:
-            self._status(f"Could not write the export: {exc}", error=True)
-            return
-        path = Path(destination).expanduser()
-        if path.suffix.lower() not in {".tsv", ".txt"}:
-            path = path.with_suffix(".tsv")
-        self._status(
-            f"Exported {count} note(s) to {path}. Import it in Anki as tab-separated text."
-        )
+            if mdx:
+                mdx_path = Path(mdx).expanduser()
+                if not mdx_path.is_file():
+                    raise FileNotFoundError(f"Dictionary not found: {mdx_path}")
+                mdd_path = mdx_path.with_suffix(".mdd")
+                has_audio = mdd_path.is_file()
+                with LdoceDictionary(mdx_path, mdd_path if has_audio else None) as dictionary:
+                    summary = export_apkg(
+                        self.words, destination, deck, dictionary, audio=has_audio
+                    )
+            else:
+                summary = export_apkg(self.words, destination, deck)
+        except (OSError, MdictError) as exc:
+            self.call_from_thread(self._status, f"Could not write the export: {exc}", error=True)
+        else:
+            enriched = (
+                f", {summary.enriched} enriched from LDOCE with {summary.audio} audio file(s)"
+                if mdx
+                else ""
+            )
+            self.call_from_thread(
+                self._status,
+                f"Exported {summary.notes} note(s){enriched} to {summary.path}. "
+                "Import it in Anki with File → Import; re-importing updates existing notes.",
+            )
+        finally:
+            self.call_from_thread(self._enable_export)
+
+    def _enable_export(self) -> None:
+        self.query_one("#export", Button).disabled = not self.words
 
     def action_refresh(self) -> None:
         self.load_categories()
