@@ -37,6 +37,8 @@ def test_words_paginate_and_deduplicate() -> None:
 
 def test_auth_error_is_friendly() -> None:
     transport = httpx.MockTransport(lambda _: httpx.Response(401, json={"message": "no"}))
-    with EudicClient("NIS bad", transport=transport) as client:
-        with pytest.raises(EudicError, match="invalid or expired token"):
-            client.categories()
+    with (
+        EudicClient("NIS bad", transport=transport) as client,
+        pytest.raises(EudicError, match="invalid or expired token"),
+    ):
+        client.categories()

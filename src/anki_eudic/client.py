@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import httpx
 
 from .models import Category, Word
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 BASE_URL = "https://api.frdic.com/api/open/v1"
 
@@ -24,7 +27,7 @@ class EudicClient:
             transport=transport,
         )
 
-    def __enter__(self) -> EudicClient:
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *_: object) -> None:
