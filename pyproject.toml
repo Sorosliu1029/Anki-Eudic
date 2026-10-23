@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "anki-eudic"
-version = "0.1.0"
+version = "0.2.0"
 description = "Export Eudic study-list words to an Anki deck from a Textual TUI"
 readme = "README.md"
 requires-python = ">=3.10"
